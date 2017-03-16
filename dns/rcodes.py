@@ -6,9 +6,7 @@ This module contains an Enum of RCODE values. See section 4.1.4 of RFC 1035 for
 more info.
 """
 
-
 from enum import IntEnum
-
 
 class RCode(IntEnum):
     """ Enum of RCODE values

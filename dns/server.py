@@ -6,9 +6,7 @@ This module provides a recursive DNS server. You will have to implement this
 server using the algorithm described in section 4.3.2 of RFC 1034.
 """
 
-
 from threading import Thread
-
 
 class RequestHandler(Thread):
     """A handler for requests to the DNS server"""
@@ -21,7 +19,6 @@ class RequestHandler(Thread):
     def run(self):
         """ Run the handler thread"""
         pass
-
 
 class Server:
     """A recursive DNS server"""

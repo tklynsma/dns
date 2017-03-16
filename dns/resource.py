@@ -13,7 +13,7 @@ import struct
 
 from dns.classes import Class
 from dns.name import Name
-from dns.types import Type
+from dns.rtypes import Type
 
 
 class ResourceRecord(object):
@@ -69,6 +69,11 @@ class ResourceRecord(object):
         rdata = RecordData.create_from_dict(type_, dct["rdata"])
         return cls(Name(dct["name"]), type_, Class[dct["class"]], dct["ttl"],
                    rdata)
+
+    def __str__(self):
+        """Covert ResourceRecord to string."""
+        return "{0: <22}  {1: <6}  {2: <6}  {3: <6}  {4}".format(
+                str(self.name), str(self.ttl), str(self.class_), str(self.type_), str(self.rdata))
 
 
 class RecordData:
@@ -151,6 +156,10 @@ class ARecordData(RecordData):
         """Create a RecordData object from dict."""
         return cls(dct["address"])
 
+    def __str__(self):
+        """Covert ARecordData to string."""
+        return str(self.address)
+
 
 class CNAMERecordData(RecordData):
     """Record data for CNAME type."""
@@ -192,6 +201,10 @@ class CNAMERecordData(RecordData):
     def from_dict(cls, dct):
         """Create a RecordData object from dict."""
         return cls(Name(dct["cname"]))
+
+    def __str__(self):
+        """Covert CNAMERecordData to string."""
+        return str(self.cname)
 
 
 class NSRecordData(RecordData):
@@ -237,6 +250,10 @@ class NSRecordData(RecordData):
     def from_dict(cls, dct):
         """Create a RecordData object from dict."""
         return cls(Name(dct["nsdname"]))
+
+    def __str__(self):
+        """Covert NSRecordData to string."""
+        return str(self.nsdname)
 
 
 class SOARecordData(RecordData):
@@ -311,6 +328,10 @@ class SOARecordData(RecordData):
         return cls(Name(dct["mname"]), Name(dct["rname"]), dct["serial"],
                    dt["refresh"], dct["retry"], dct["expire"], dct["minimum"])
 
+    def __str__(self):
+        """Covert SOARecordData to string."""
+        return "..."
+
 
 class GenericRecordData(RecordData):
     """Generic Record Data (for other types)."""
@@ -352,3 +373,7 @@ class GenericRecordData(RecordData):
     def from_dict(cls, dct):
         """Create a RecordData object from dict."""
         return cls(dct["data"])
+
+    def __str__(self):
+        """Covert GenericRecordData to string."""
+        return "..."

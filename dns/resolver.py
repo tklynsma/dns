@@ -7,14 +7,12 @@ things in this module. This resolver will be both used by the DNS client and the
 DNS server, but with a different list of servers.
 """
 
-
 import socket
 
 from dns.classes import Class
 from dns.message import Message, Question, Header
 from dns.name import Name
-from dns.types import Type
-
+from dns.rtypes import Type
 
 class Resolver:
     """DNS resolver"""
@@ -30,6 +28,24 @@ class Resolver:
         self.caching = caching
         self.ttl = ttl
 
+    def send_query(self, sock, hostname, nameserver):
+        """ Create and send a query into the socket and receive a response.
+        
+        Args:
+            sock(socket): the socket to send the datagram into
+            hostname(str): the hostname to resolve
+            nameserver(str): the nameserver to send the query to
+
+        Returns:
+            Message: the response message
+        """
+        question = Question(Name(hostname), Type.A, Class.IN)
+        header = Header(9001, 0, 1, 0, 0, 0)
+        header.qr, header.opcode, header.rd = 0, 0, 0
+        query = Message(header, [question])
+        sock.sendto(query.to_bytes(), (nameserver, 53))
+        return Message.from_bytes(sock.recv(1024))
+
     def gethostbyname(self, hostname):
         """Translate a host name to IPv4 address.
 
@@ -43,6 +59,14 @@ class Resolver:
             (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.settimeout(self.timeout)
+
+        response = self.send_query(sock, hostname, "m.root-servers.net")
+        print(response)
+
+        return hostname, [], []
+
+        """sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(self.timeout)
 
         # Create and send query
@@ -68,4 +92,4 @@ class Resolver:
                 aliaslist.append(hostname)
                 hostname = str(answer.rdata.cname)
 
-        return hostname, aliaslist, ipaddrlist
+        return hostname, aliaslist, ipaddrlist"""

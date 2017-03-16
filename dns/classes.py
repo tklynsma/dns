@@ -7,9 +7,7 @@ a method for converting values to strings. See sections 3.2.4 and 3.2.5 of RFC
 1035 for more information.
 """
 
-
 from enum import IntEnum
-
 
 class Class(IntEnum):
     """ Enum of CLASS and QCLASS values

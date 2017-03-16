@@ -6,14 +6,12 @@ This module contains classes for DNS messages, their header section and
 question fields. See section 4 of RFC 1035 for more info.
 """
 
-
 import struct
 
 from dns.classes import Class
 from dns.name import Name
 from dns.resource import ResourceRecord
-from dns.types import Type
-
+from dns.rtypes import Type
 
 class Message:
     """DNS message."""
@@ -103,6 +101,27 @@ class Message:
             additionals.append(additional)
 
         return cls(header, questions, answers, authorities, additionals)
+
+    def __str__(self):
+        """Covert Message to string."""
+        str_ = str(self.header)
+        if(len(self.questions) > 0):
+            str_ += "\n\nQUESTION SECTION:"
+            for record in self.questions:
+                str_ += "\n{}".format(str(record))
+        if(len(self.answers) > 0):
+            str_ += "\n\nANSWER SECTION:"
+            for record in self.answers:
+                str_ += "\n{}".format(str(record))
+        if(len(self.authorities) > 0):
+            str_ += "\n\nAUTHORITY SECTION:"
+            for record in self.authorities:
+                str_ += "\n{}".format(str(record))
+        if(len(self.additionals) > 0):
+            str_ += "\n\nADDITIONAL SECTION:"
+            for record in self.additionals:
+                str_ += "\n{}".format(str(record))
+        return str_
 
 
 class Header:
@@ -241,6 +260,7 @@ class Header:
     def rcode(self):
         """Get RCODE."""
         return self._flags & 0b1111
+        
     @rcode.setter
     def rcode(self, value):
         """Set RCODE."""
@@ -248,6 +268,18 @@ class Header:
             raise ValueError("invalid return code")
         self._flags &= ~0b1111
         self._flags |= value
+
+    def __str__(self):
+        """Covert Header to string."""
+        str_ = ";; ->>HEADER<<- opcode: {}, status: {}, id: {}\n;; flags:".format(
+                str(self.opcode), str(self.rcode), self.ident)
+        if(self.qr == 1): str_ += " qr"
+        if(self.aa == 1): str_ += " aa"
+        if(self.tc == 1): str_ += " tc"
+        if(self.rd == 1): str_ += " rd"
+        if(self.ra == 1): str_ += " ra"
+        return str_ + "; QUERY: {}, ANSWER: {}, AUTHORITY: {}, ADDITIONAL: {}".format(
+                self.qd_count, self.an_count, self.ns_count, self.ar_count)
 
 
 class Question:
@@ -282,3 +314,8 @@ class Question:
         qtype = Type(struct.unpack_from("!H", packet, offset)[0])
         qclass = Class(struct.unpack_from("!H", packet, offset + 2)[0])
         return cls(qname, qtype, qclass), offset + 4
+
+    def __str__(self):
+        """Covert Question to string."""
+        return "{0: <30}  {1: <6}  {2: <6}".format(
+                str(self.qname), str(self.qclass), str(self.qtype))

@@ -4,7 +4,6 @@
 
 import struct
 
-
 class Name:
     """A domain name."""
 
