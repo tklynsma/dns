@@ -73,7 +73,8 @@ class ResourceRecord(object):
     def __str__(self):
         """Covert ResourceRecord to string."""
         return "{0: <22}  {1: <6}  {2: <6}  {3: <6}  {4}".format(
-                str(self.name), str(self.ttl), str(self.class_), str(self.type_), str(self.rdata))
+                str(self.name), str(self.ttl), str(self.class_), str(self.type_),
+                str(self.rdata))
 
 
 class RecordData:

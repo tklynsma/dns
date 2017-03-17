@@ -319,3 +319,7 @@ class Question:
         """Covert Question to string."""
         return "{0: <30}  {1: <6}  {2: <6}".format(
                 str(self.qname), str(self.qclass), str(self.qtype))
+
+    def __eq__(self, other):
+        return self.qname == other.qname and self.qtype == other.qtype \
+            and self.qclass == other.qclass

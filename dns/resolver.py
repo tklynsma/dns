@@ -13,6 +13,10 @@ from dns.classes import Class
 from dns.message import Message, Question, Header
 from dns.name import Name
 from dns.rtypes import Type
+from dns.rcodes import RCode
+
+# IP addresses of the root servers [a-c].root-servers.net
+ROOT_SERVERS = ["198.41.0.4", "192.228.79.201", "192.33.4.12"]
 
 class Resolver:
     """DNS resolver"""
@@ -28,7 +32,7 @@ class Resolver:
         self.caching = caching
         self.ttl = ttl
 
-    def send_query(self, sock, hostname, nameserver):
+    def send_and_receive_query(self, sock, hostname, nameserver):
         """ Create and send a query into the socket and receive a response.
         
         Args:
@@ -37,16 +41,64 @@ class Resolver:
             nameserver(str): the nameserver to send the query to
 
         Returns:
-            Message: the response message
+            (Message, Message): the query and response messages
         """
         question = Question(Name(hostname), Type.A, Class.IN)
         header = Header(9001, 0, 1, 0, 0, 0)
         header.qr, header.opcode, header.rd = 0, 0, 0
         query = Message(header, [question])
-        sock.sendto(query.to_bytes(), (nameserver, 53))
-        return Message.from_bytes(sock.recv(1024))
+        try:
+            sock.sendto(query.to_bytes(), (nameserver, 53))
+            response = Message.from_bytes(sock.recv(512))
+            return query, response
+        except:
+            return query, None
 
-    def gethostbyname(self, hostname):
+    def is_valid_response(self, query, response):
+        """ Check whether the response is a valid response to the query.
+
+        Args:
+            query(Message): the send query message
+            response(Message): the received response message
+        Returns:
+            Bool: true iff the response is a valid response to the query
+        """
+        return response is not None \
+            and response.header.qr == 1 \
+            and response.header.rcode == RCode.NoError \
+            and query.header.ident == response.header.ident \
+            and query.questions == response.questions
+
+    def get_name_servers(self, response):
+        """ Extract all name servers from the response and Check 
+        the additional section for any nameserver IP addresses.
+
+        Args:
+            response(Message): the received response message
+        Returns:
+            [str]: a list containing all found name servers
+        """
+        # Find all name servers contained in NS records.
+        name_servers = []
+        for record in response.authorities:
+            if record.type_ == Type.NS:
+                name_servers.append(str(record.rdata))
+
+        # Replace any name servers with their IP address if an A
+        # resource record is found in the additional section and
+        # move them to the front of the list (prefer nameservers
+        # whose IP address is known).
+        for record in response.additionals:
+            if record.type_ == Type.A:
+                try:
+                    index = name_servers.index(str(record.name))
+                    name_servers[index] = str(record.rdata)
+                    name_servers.insert(0, name_servers.pop(index))
+                except ValueError: pass
+
+        return name_servers
+
+    def gethostbyname(self, hostname, aliaslist=[], hints=[]):
         """Translate a host name to IPv4 address.
 
         Currently this method contains an example. You will have to replace
@@ -54,42 +106,56 @@ class Resolver:
 
         Args:
             hostname (str): the hostname to resolve
+            aliaslist [str]: the list of alias domain names
 
         Returns:
             (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
         """
+
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(self.timeout)
 
-        response = self.send_query(sock, hostname, "m.root-servers.net")
-        print(response)
+        hints = hints + ROOT_SERVERS
 
+        while hints:
+            query, response = self.send_and_receive_query(sock, hostname, hints.pop(0))
+            if self.is_valid_response(query, response):
+
+                # The response contains an answer:
+                if len(response.answers) > 0:
+                    ipaddrlist = []
+
+                    # Get the data from the answer section.
+                    for answer in response.answers:
+                        if answer.type_ == Type.CNAME:
+                            if hostname == str(answer.name).rstrip('.'):
+                                aliaslist.append(hostname)
+                                hostname = str(answer.rdata).rstrip('.')
+                        elif answer.type_ == Type.A:
+                            if hostname == str(answer.name).rstrip('.'):
+                                ipaddrlist.append(str(answer.rdata))
+
+                    # The answer contains an IP address:
+                    if ipaddrlist:
+                        # Return the answer.
+                        return hostname, aliaslist, ipaddrlist
+
+                    # The answer does not contain an IP address:
+                    else:
+                        # Start a new query to the hostname found in the CNAME record 
+                        # using any additional nameservers found in the authority 
+                        # section as initial hints.
+                        hints = self.get_name_servers(response)
+                        return self.gethostbyname(hostname, aliaslist, hints)
+
+                # The response does not contain an answer:
+                else: 
+                    # Update the hints with the NS records found in the authority section.
+                    hints = self.get_name_servers(response) + hints
+
+        # Exhausted all hints.
         return hostname, [], []
 
-        """sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.settimeout(self.timeout)
-
-        # Create and send query
-        question = Question(Name(hostname), Type.A, Class.IN)
-        header = Header(9001, 0, 1, 0, 0, 0)
-        header.qr = 0
-        header.opcode = 0
-        header.rd = 1
-        query = Message(header, [question])
-        sock.sendto(query.to_bytes(), ("8.8.8.8", 53))
-
-        # Receive response
-        data = sock.recv(512)
-        response = Message.from_bytes(data)
-
-        # Get data
-        aliaslist = []
-        ipaddrlist = []
-        for answer in response.answers:
-            if answer.type_ == Type.A:
-                ipaddrlist.append(answer.rdata.address)
-            if answer.type_ == Type.CNAME:
-                aliaslist.append(hostname)
-                hostname = str(answer.rdata.cname)
-
-        return hostname, aliaslist, ipaddrlist"""
+    def gethostbyname_ex(self, hostname):
+        """Execute python's gethostname_ex. (for testing)"""
+        return socket.gethostbyname_ex(hostname)
