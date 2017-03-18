@@ -101,9 +101,6 @@ class Resolver:
     def gethostbyname(self, hostname, aliaslist=[], hints=[]):
         """Translate a host name to IPv4 address.
 
-        Currently this method contains an example. You will have to replace
-        this example with the algorithm described in section 5.3.3 in RFC 1034.
-
         Args:
             hostname (str): the hostname to resolve
             aliaslist [str]: the list of alias domain names
@@ -155,7 +152,3 @@ class Resolver:
 
         # Exhausted all hints.
         return hostname, [], []
-
-    def gethostbyname_ex(self, hostname):
-        """Execute python's gethostname_ex. (for testing)"""
-        return socket.gethostbyname_ex(hostname)

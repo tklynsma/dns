@@ -21,14 +21,10 @@ def resolve():
 
     resolver = Resolver(args.timeout, args.caching, args.ttl)
     hostname, aliaslist, ipaddrlist = resolver.gethostbyname(args.hostname)
-    print("({}, {}, {})".format(hostname, aliaslist, ipaddrlist))
 
-    hostname, aliaslist, ipaddrlist = resolver.gethostbyname_ex(args.hostname)
-    print("({}, {}, {})".format(hostname, aliaslist, ipaddrlist))
-
-    #print(hostname)
-    #print(aliaslist)
-    #print(ipaddrlist)
+    print(hostname)
+    print(aliaslist)
+    print(ipaddrlist)
 
 if __name__ == "__main__":
     resolve()
