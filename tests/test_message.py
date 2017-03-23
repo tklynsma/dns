@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch, call
 from util import DNSTestCase
 
 from dns.name import Name
-from dns.types import Type
+from dns.rtypes import Type
 from dns.classes import Class
 from dns.message import Message, Header, Question
 import dns.message

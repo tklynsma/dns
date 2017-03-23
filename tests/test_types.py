@@ -2,7 +2,7 @@
 
 import unittest
 
-from dns.types import Type
+from dns.rtypes import Type
 
 
 class TypeTestCase(unittest.TestCase):

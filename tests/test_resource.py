@@ -6,7 +6,7 @@ from util import DNSTestCase
 
 from dns.resource import ResourceRecord, ARecordData
 from dns.name import Name
-from dns.types import Type
+from dns.rtypes import Type
 from dns.classes import Class
 
 

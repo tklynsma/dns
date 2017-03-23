@@ -6,12 +6,38 @@ import sys
 import unittest
 from unittest import TestCase
 from argparse import ArgumentParser
+from dns.resolver import Resolver
 
 PORT = 5001
 SERVER = "localhost"
+TIMEOUT = 2
 
 class TestResolver(TestCase):
     """Resolver tests"""
+
+    def test_valid_FQDN1(self):
+        hostname = "gaia.cs.umass.edu"
+        resolver = Resolver(TIMEOUT, False, 0)
+        result = resolver.gethostbyname(hostname)
+        self.assertEqual(result, (hostname, [], ['128.119.245.12']))
+
+    def test_valid_FQDN2(self):
+        hostname = "www.ru.nl"
+        resolver = Resolver(TIMEOUT, False, 0)
+        result = resolver.gethostbyname(hostname)
+        self.assertEqual(result, ("wwwproxy.ru.nl", [hostname], ['131.174.78.60']))
+
+    def test_valid_FQDN3(self):
+        hostname = "www.gmail.com"
+        resolver = Resolver(TIMEOUT, False, 0)
+        result = resolver.gethostbyname(hostname)
+        self.assertEqual(result, ("googlemail.l.google.com", [hostname, "mail.google.com"], ['172.217.17.37']))
+
+    def test_invalid_FQDN(self):
+        hostname = "invalid.cs.ru.nl"
+        resolver = Resolver(TIMEOUT, False, 0)
+        result = resolver.gethostbyname(hostname)
+        self.assertEqual(result, (hostname, [], [])) 
 
 class TestCache(TestCase):
     """Cache tests"""

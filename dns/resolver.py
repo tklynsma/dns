@@ -98,20 +98,33 @@ class Resolver:
 
         return name_servers
 
-    def gethostbyname(self, hostname, aliaslist=[], hints=[]):
+    def gethostbyname(self, hostname):
         """Translate a host name to IPv4 address.
 
         Args:
             hostname (str): the hostname to resolve
-            aliaslist [str]: the list of alias domain names
 
         Returns:
             (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
         """
-
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(self.timeout)
+        result = self._gethostbyname(sock, hostname, [], [])
+        sock.close()
+        return result
 
+    def _gethostbyname(self, sock, hostname, aliaslist, hints):
+        """Translate a host name to IPv4 address.
+
+        Args:
+            sock (Socket): the socket to send datagrams into
+            hostname (str): the hostname to resolve
+            aliaslist [str]: the list of alias domain names
+            hints [str]: the list of additional hints
+
+        Returns:
+            (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
+        """
         hints = hints + ROOT_SERVERS
 
         while hints:
@@ -143,7 +156,7 @@ class Resolver:
                         # using any additional nameservers found in the authority 
                         # section as initial hints.
                         hints = self.get_name_servers(response)
-                        return self.gethostbyname(hostname, aliaslist, hints)
+                        return self._gethostbyname(sock, hostname, aliaslist, hints)
 
                 # The response does not contain an answer:
                 else: 
