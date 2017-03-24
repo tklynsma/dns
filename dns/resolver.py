@@ -25,7 +25,7 @@ def initialize_root_servers():
         [str]: the list of root IP addresses
     """
     zone = Zone()
-    zone.read_master_file("dns/named.root")
+    zone.read_master_file("named.root")
     nameservers = [str(record.rdata) for record in zone.records['.']]
     return [str(zone.records[nameserver][0].rdata) for nameserver in nameservers]
 
@@ -122,23 +122,22 @@ class Resolver:
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(self.timeout)
-        result = self._gethostbyname(sock, hostname, [], [])
+        result = self._gethostbyname(sock, hostname, self.root_servers, [])
         sock.close()
         return result
 
-    def _gethostbyname(self, sock, hostname, aliaslist, hints):
+    def _gethostbyname(self, sock, hostname, hints, aliaslist):
         """Translate a host name to IPv4 address.
 
         Args:
             sock (Socket): the socket to send datagrams into
             hostname (str): the hostname to resolve
+            hints [str]: the list of initial nameserver hints
             aliaslist [str]: the list of alias domain names
-            hints [str]: the list of additional hints
 
         Returns:
             (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
         """
-        hints = hints + self.root_servers
 
         while hints:
             query, response = self.send_and_receive_query(sock, hostname, hints.pop(0))
@@ -168,8 +167,8 @@ class Resolver:
                         # Start a new query to the hostname found in the CNAME record 
                         # using any additional nameservers found in the authority 
                         # section as initial hints.
-                        hints = self.get_name_servers(response)
-                        return self._gethostbyname(sock, hostname, aliaslist, hints)
+                        hints = self.get_name_servers(response) + self.root_servers
+                        return self._gethostbyname(sock, hostname, hints, aliaslist)
 
                 # The response does not contain an answer:
                 else: 
