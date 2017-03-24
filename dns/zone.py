@@ -9,6 +9,10 @@ zones or record sets.
 These classes are merely a suggestion, feel free to use something else.
 """
 
+from dns.classes import Class
+from dns.resource import ResourceRecord, ARecordData, CNAMERecordData, NSRecordData
+from dns.rtypes import Type
+
 
 class Catalog:
     """A catalog of zones"""
@@ -51,4 +55,25 @@ class Zone:
         Args:
             filename (str): the filename of the master file
         """
-        pass
+        zonefile = open(filename, "r")
+        lines = zonefile.readlines()
+        lines = list(map(lambda x : x.split(';', 1)[0], lines))
+        lines = list(filter(lambda x : x != "", lines))
+        lines = list(map(lambda x : x.split(), lines))
+
+        self.records = {line[0] : [] for line in lines}
+
+        for line in lines:
+            name, ttl, type_, data = tuple(line)
+            if type_ == 'A':
+                rdata = ARecordData(data)
+                record = ResourceRecord(name, Type.A, Class.IN, ttl, rdata)
+                self.records[name].append(record)
+            elif type_ == 'CNAME':
+                rdata = CNAMERecordData(data)
+                record = ResourceRecord(name, Type.CNAME, Class.IN, ttl, rdata)
+                self.records[name].append(record)
+            elif type_ == 'NS':
+                rdata = NSRecordData(data)
+                record = ResourceRecord(name, Type.NS, Class.IN, ttl, rdata)
+                self.records[name].append(record)

@@ -13,6 +13,7 @@ from dns.name import Name
 from dns.resource import ResourceRecord
 from dns.rtypes import Type
 
+
 class Message:
     """DNS message."""
 

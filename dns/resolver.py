@@ -14,12 +14,25 @@ from dns.message import Message, Question, Header
 from dns.name import Name
 from dns.rtypes import Type
 from dns.rcodes import RCode
+from dns.zone import Zone
+from enum import Enum
 
-# IP addresses of the root servers [a-c].root-servers.net
-ROOT_SERVERS = ["198.41.0.4", "192.228.79.201", "192.33.4.12"]
+
+def initialize_root_servers():
+    """Initialize root server IP addresses from the root hints zone file
+
+    Returns:
+        [str]: the list of root IP addresses
+    """
+    zone = Zone()
+    zone.read_master_file("dns/named.root")
+    nameservers = [str(record.rdata) for record in zone.records['.']]
+    return [str(zone.records[nameserver][0].rdata) for nameserver in nameservers]
+
 
 class Resolver:
     """DNS resolver"""
+    root_servers = initialize_root_servers()
 
     def __init__(self, timeout, caching, ttl):
         """Initialize the resolver
@@ -125,7 +138,7 @@ class Resolver:
         Returns:
             (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
         """
-        hints = hints + ROOT_SERVERS
+        hints = hints + self.root_servers
 
         while hints:
             query, response = self.send_and_receive_query(sock, hostname, hints.pop(0))

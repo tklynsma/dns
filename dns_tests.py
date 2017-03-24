@@ -27,12 +27,6 @@ class TestResolver(TestCase):
         result = resolver.gethostbyname(hostname)
         self.assertEqual(result, ("wwwproxy.ru.nl", [hostname], ['131.174.78.60']))
 
-    def test_valid_FQDN3(self):
-        hostname = "www.gmail.com"
-        resolver = Resolver(TIMEOUT, False, 0)
-        result = resolver.gethostbyname(hostname)
-        self.assertEqual(result, ("googlemail.l.google.com", [hostname, "mail.google.com"], ['172.217.17.37']))
-
     def test_invalid_FQDN(self):
         hostname = "invalid.cs.ru.nl"
         resolver = Resolver(TIMEOUT, False, 0)
