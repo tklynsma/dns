@@ -10,6 +10,7 @@ of your resolver and server.
 
 import socket
 import struct
+import time
 
 from dns.classes import Class
 from dns.name import Name
@@ -32,6 +33,7 @@ class ResourceRecord(object):
         self.class_ = class_
         self.ttl = ttl
         self.rdata = rdata
+        self.timestamp = time.time()
 
     def to_bytes(self, offset, compress):
         """Convert ResourceRecord to bytes."""
@@ -60,19 +62,31 @@ class ResourceRecord(object):
                 "type" : str(self.type_),
                 "class" : str(self.class_),
                 "ttl" : self.ttl,
-                "rdata" : self.rdata.to_dict()}
+                "rdata" : self.rdata.to_dict(),
+                "timestamp" : self.timestamp}
 
     @classmethod
     def from_dict(cls, dct):
         """Convert ResourceRecord from dict."""
         type_ = Type[dct["type"]]
         rdata = RecordData.create_from_dict(type_, dct["rdata"])
-        return cls(Name(dct["name"]), type_, Class[dct["class"]], dct["ttl"],
-                   rdata)
+        record = cls(Name(dct["name"]), type_, Class[dct["class"]], dct["ttl"], rdata)
+        record.timestamp = dct["timestamp"]
+        return record
+
+    def is_valid(self):
+        """Check whether the resource record is still valid"""
+        return self.timestamp + self.ttl > time.time()
+
+    def __eq__(self, other):
+        """Compare resource records"""
+        return str(self.name) == str(other.name) and self.type_ == other.type_ \
+            and self.class_ == other.class_ and self.ttl == other.ttl \
+            and self.rdata == other.rdata and self.timestamp == other.timestamp
 
     def __str__(self):
         """Covert ResourceRecord to string."""
-        return "{0: <22}  {1: <6}  {2: <6}  {3: <6}  {4}".format(
+        return "{0: <22}  {1: <6}  {2: <6}  {3: <6}  {4}  {5}".format(
                 str(self.name), str(self.ttl), str(self.class_), str(self.type_),
                 str(self.rdata))
 
@@ -157,6 +171,10 @@ class ARecordData(RecordData):
         """Create a RecordData object from dict."""
         return cls(dct["address"])
 
+    def __eq__(self, other):
+        """Compare ARecordData"""
+        return self.address == other.address
+
     def __str__(self):
         """Covert ARecordData to string."""
         return str(self.address)
@@ -202,6 +220,10 @@ class CNAMERecordData(RecordData):
     def from_dict(cls, dct):
         """Create a RecordData object from dict."""
         return cls(Name(dct["cname"]))
+
+    def __eq__(self, other):
+        """Compare CNAMERecordData"""
+        return str(self.cname) == str(other.cname)
 
     def __str__(self):
         """Covert CNAMERecordData to string."""
@@ -251,6 +273,10 @@ class NSRecordData(RecordData):
     def from_dict(cls, dct):
         """Create a RecordData object from dict."""
         return cls(Name(dct["nsdname"]))
+
+    def __eq__(self, other):
+        """Compare NSRecordData"""
+        return self.nsdname == other.nsdname
 
     def __str__(self):
         """Covert NSRecordData to string."""

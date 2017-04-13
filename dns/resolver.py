@@ -150,11 +150,11 @@ class Resolver:
                     # Get the data from the answer section.
                     for answer in response.answers:
                         if answer.type_ == Type.CNAME:
-                            if hostname == str(answer.name).rstrip('.'):
+                            if hostname == str(answer.name):
                                 aliaslist.append(hostname)
-                                hostname = str(answer.rdata).rstrip('.')
+                                hostname = str(answer.rdata)
                         elif answer.type_ == Type.A:
-                            if hostname == str(answer.name).rstrip('.'):
+                            if hostname == str(answer.name):
                                 ipaddrlist.append(str(answer.rdata))
 
                     # The answer contains an IP address:
