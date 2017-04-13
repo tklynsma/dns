@@ -16,11 +16,11 @@ class NameTestCase(unittest.TestCase):
 
     def test_name_str1(self):
         name = Name("example.com")
-        self.assertEqual(str(name), "example.com.")
+        self.assertEqual(str(name), "example.com")
 
     def test_name_str2(self):
         name = Name("example.com.")
-        self.assertEqual(str(name), "example.com.")
+        self.assertEqual(str(name), "example.com")
 
     def test_name_str3(self):
         name = Name("")

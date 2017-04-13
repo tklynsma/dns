@@ -4,10 +4,12 @@ from unittest.mock import MagicMock, patch
 
 from util import DNSTestCase
 
-from dns.resource import ResourceRecord, ARecordData
+from dns.resource import ResourceRecord, ARecordData, CNAMERecordData
 from dns.name import Name
 from dns.rtypes import Type
 from dns.classes import Class
+
+import time
 
 
 class ResourceRecordTestCase(DNSTestCase):
@@ -45,6 +47,21 @@ class ResourceRecordTestCase(DNSTestCase):
         self.assertEqual(record1, record2)
         MockName.from_bytes.assert_called_with(packet, 0)
         MockRData.create_from_bytes.assert_called_with(Type.A, packet, 23, 4)
+
+    def test_resource_eq(self):
+        record1 = ResourceRecord("a", Type.A, Class.IN, 0, ARecordData("0.0.0.0"))
+        record2 = ResourceRecord("a", Type.A, Class.IN, 0, ARecordData("0.0.0.0"))
+        record1.timestamp = record2.timestamp
+        self.assertTrue(record1 == record2)
+        record3 = ResourceRecord("a", Type.CNAME, Class.IN, 0, CNAMERecordData("b"))
+        record4 = ResourceRecord("a", Type.CNAME, Class.IN, 0, CNAMERecordData("b"))
+        record3.timestamp = record4.timestamp
+        self.assertTrue(record3 == record4)
+
+    def test_resource_dict(self):
+        record1 = ResourceRecord("a", Type.A, Class.IN, 0, ARecordData("0.0.0.0"))
+        record2 = ResourceRecord.from_dict(record1.to_dict())
+        self.assertTrue(record1 == record2)
 
 
 class RecordDataTestCase(DNSTestCase):
