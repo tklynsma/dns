@@ -101,7 +101,7 @@ class Resolver:
         # resource record is found in the additional section and
         # move them to the front of the list (prefer nameservers
         # whose IP address is known).
-        for record in response.additionals:
+        for record in reversed(response.additionals):
             if record.type_ == Type.A:
                 try:
                     index = name_servers.index(str(record.name))
