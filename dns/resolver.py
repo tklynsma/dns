@@ -25,7 +25,7 @@ def initialize_root_servers():
         [str]: the list of root IP addresses
     """
     zone = Zone()
-    zone.read_master_file("named.root")
+    zone.read_master_file("root")
     nameservers = [str(record.rdata) for record in zone.records['.']]
     return [str(zone.records[nameserver][0].rdata) for nameserver in nameservers]
 
