@@ -14,14 +14,9 @@ from dns.resource import ResourceRecord
 class RecordCache:
     """Cache for ResourceRecords"""
 
-    def __init__(self, filename):
+    def __init__(self):
         """Initialize the RecordCache"""
         self.records = {}
-        self.filename = filename
-
-    def __del__(self):
-        """Write contents to file at exit"""
-        self.write_cache_file()
 
     def lookup(self, dname, type_, class_):
         """Lookup resource records in cache
@@ -60,30 +55,30 @@ class RecordCache:
             self.records[str(record.name)] = []
         self.records[str(record.name)].append(record)
 
-    def read_cache_file(self):
+    def read_cache_file(self, filename):
         """Read the cache file from disk"""
         dcts = []
         try:
-            with open(self.filename, "r") as file_:
+            with open(filename, "r") as file_:
                 dcts = json.load(file_)
         except:
-            print("could not read cachefile", self.filename)
+            print("could not read cachefile", filename)
 
         record_list = [ResourceRecord.from_dict(dct) for dct in dcts]
         self.records = {str(record.name) : [] for record in record_list}
         for record in record_list:
             self.records[str(record.name)].append(record)
 
-    def write_cache_file(self):
+    def write_cache_file(self, filename):
         """Write the cache file to disk"""
         dcts = []
         for key, record_set in self.records.items():
             dcts = dcts + [record.to_dict() for record in record_set]
         try:
-            with open(self.filename, "w") as file_:
+            with open(filename, "w") as file_:
                 json.dump(dcts, file_, indent=2)
         except:
-            print("could not write cachefile", self.filename)
+            print("could not write cachefile", filename)
 
     def filter_cache(self):
         """Remove all invalid resource records"""

@@ -38,6 +38,13 @@ class TestResolver(TestCase):
         result = self.resolver.gethostbyname(hostname)
         self.assertEqual(result, ("wwwproxy.ru.nl", [hostname], ['131.174.78.60']))
 
+    def test_valid_hostname3(self):
+        hostname1 = "nyan.cat"
+        hostname2 = "nyan.cat."
+        result1 = self.resolver.gethostbyname(hostname1)
+        result2 = self.resolver.gethostbyname(hostname2)
+        self.assertEqual(result1, result2)
+
     def test_invalid_hostname(self):
         hostname = "invalid_domain.nl"
         result = self.resolver.gethostbyname(hostname)
@@ -53,7 +60,7 @@ class TestCache(TestCase):
         cls.r2 = ResourceRecord("a", Type.CNAME, Class.IN, 60, CNAMERecordData("b"))
         cls.r3 = ResourceRecord("a", Type.CNAME, Class.IN, 60, CNAMERecordData("c"))
 
-        cls.cache = RecordCache("test_cache")
+        cls.cache = RecordCache()
         cls.cache.add_record(cls.r1)
         cls.cache.add_record(cls.r2)
         cls.cache.add_record(cls.r3)
@@ -79,7 +86,7 @@ class TestCache(TestCase):
         self.assertEqual(self.cache.lookup("a", Type.A, Class.IN), [self.r1])
 
     def test_filter_cache(self):
-        cache = RecordCache("test_cache")
+        cache = RecordCache()
         r1 = ResourceRecord("a", Type.A, Class.IN, 1, ARecordData("0.0.0.0"))
         r2 = ResourceRecord("a", Type.A, Class.IN, 1, ARecordData("1.1.1.1"))
         cache.add_record(r1)
@@ -89,22 +96,13 @@ class TestCache(TestCase):
         self.assertEqual(cache.records, {})
 
     def test_read_write_cache_file(self):
-        self.cache.write_cache_file()
-        cache_copy = RecordCache("test_cache")
-        cache_copy.read_cache_file()
+        self.cache.write_cache_file("test_cache")
+        cache_copy = RecordCache()
+        cache_copy.read_cache_file("test_cache")
         for key, record_set in self.cache.records.items():
             self.assertTrue(key in cache_copy.records)
             for i, record in enumerate(record_set):
                 self.assertEqual(record, cache_copy.records[key][i])
-
-    def test_write_on_delete(self):
-        test_cache1 = RecordCache("test_cache")
-        record = ResourceRecord("c", Type.A, Class.IN, 60, ARecordData("0.0.0.0"))
-        test_cache1.add_record(record)
-        del test_cache1
-        test_cache2 = RecordCache("test_cache")
-        test_cache2.read_cache_file()
-        self.assertTrue("c" in test_cache2.records)
 
 
 class TestResolverCache(TestCase):

@@ -31,8 +31,8 @@ def initialize_root_servers():
     return [str(zone.records[nameserver][0].rdata) for nameserver in nameservers]
 
 def initialize_cache():
-    cache = RecordCache("cache")
-    cache.read_cache_file()
+    cache = RecordCache()
+    cache.read_cache_file("cache")
     cache.filter_cache()
     return cache
 
@@ -130,6 +130,7 @@ class Resolver:
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(self.timeout)
+        hostname = str(Name(hostname))
         result = self._gethostbyname(sock, hostname, self.root_servers, [])
         sock.close()
         return result
