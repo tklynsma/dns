@@ -33,7 +33,7 @@ class Name:
         result = ""
         for label in self.labels:
             result += label + "."
-        return result.rstrip('.')
+        return result
 
     def to_bytes(self, offset, compress=None):
         """Convert Name to bytes."""
