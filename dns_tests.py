@@ -20,10 +20,11 @@ from dns.rtypes import Type
 PORT = 5001
 SERVER = "localhost"
 TIMEOUT = 2
+TTL = 1
 
 
 class TestResolver(TestCase):
-    """Resolver tests"""
+    """Resolver tests without cache"""
 
     @classmethod
     def setUpClass(cls):
@@ -40,6 +41,12 @@ class TestResolver(TestCase):
         self.assertEqual(result, ("wwwproxy.ru.nl.", [hostname], ['131.174.78.60']))
 
     def test_valid_hostname3(self):
+        hostname = "www.gmail.com."
+        result = self.resolver.gethostbyname(hostname)
+        self.assertEqual(result, ("googlemail.l.google.com.",
+            [hostname, "mail.google.com."], ["172.217.17.69"]))
+
+    def test_valid_hostname3(self):
         hostname1 = "nyan.cat"
         hostname2 = "nyan.cat."
         result1 = self.resolver.gethostbyname(hostname1)
@@ -47,7 +54,7 @@ class TestResolver(TestCase):
         self.assertEqual(result1, result2)
 
     def test_invalid_hostname(self):
-        hostname = "invalid_domain.nl."
+        hostname = "invalid_address.com."
         result = self.resolver.gethostbyname(hostname)
         self.assertEqual(result, (hostname, [], [])) 
 
@@ -57,14 +64,17 @@ class TestCache(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.r1 = ResourceRecord(Name("a"), Type.A, Class.IN, 60, ARecordData("0.0.0.0"))
-        cls.r2 = ResourceRecord(Name("a"), Type.CNAME, Class.IN, 60, CNAMERecordData(Name("b")))
-        cls.r3 = ResourceRecord(Name("a"), Type.CNAME, Class.IN, 60, CNAMERecordData(Name("c")))
+        rdata1 = ARecordData("0.0.0.0")
+        rdata2 = CNAMERecordData(Name("b"))
+        rdata3 = CNAMERecordData(Name("c"))
+        cls.record1 = ResourceRecord(Name("a"), Type.A, Class.IN, 10, rdata1)
+        cls.record2 = ResourceRecord(Name("a"), Type.CNAME, Class.IN, 10, rdata2)
+        cls.record3 = ResourceRecord(Name("a"), Type.CNAME, Class.IN, 10, rdata3)
 
         cls.cache = RecordCache()
-        cls.cache.add_record(cls.r1)
-        cls.cache.add_record(cls.r2)
-        cls.cache.add_record(cls.r3)
+        cls.cache.add_record(cls.record1)
+        cls.cache.add_record(cls.record2)
+        cls.cache.add_record(cls.record3)
 
     @classmethod
     def tearDownClass(cls):
@@ -74,25 +84,48 @@ class TestCache(TestCase):
         except:
             print("\nFailed to remove test_cache")
 
-    def test_lookup(self):
-        self.assertEqual(self.cache.lookup("a.", Type.A, Class.IN), [self.r1])
-        self.assertEqual(self.cache.lookup("a.", Type.CNAME, Class.IN), [self.r2, self.r3])
-        self.assertEqual(self.cache.lookup("b.", Type.A, Class.IN), [])
+    def test_lookup1(self):
+        result = self.cache.lookup("a.", Type.A, Class.IN)
+        self.assertEqual(result, [self.record1])
 
-    def test_lookup_ttl_exceeded(self):
-        record = ResourceRecord(Name("a"), Type.A, Class.IN, 1, ARecordData("1.1.1.1"))
+    def test_lookup2(self):
+        result = self.cache.lookup("a.", Type.CNAME, Class.IN)
+        self.assertEqual(result, [self.record2, self.record3])
+
+    def test_lookup3(self):
+        result = self.cache.lookup("b.", Type.A, Class.IN)
+        self.assertEqual(result, [])
+
+    def test_lookup_ttl(self):
+        rdata = ARecordData("1.1.1.1")
+        record = ResourceRecord(Name("a"), Type.A, Class.IN, TTL, rdata)
         self.cache.add_record(record)
-        self.assertEqual(self.cache.lookup("a.", Type.A, Class.IN), [self.r1, record])
-        time.sleep(1)
-        self.assertEqual(self.cache.lookup("a.", Type.A, Class.IN), [self.r1])
+        result = self.cache.lookup("a.", Type.A, Class.IN)
+        self.assertEqual(result, [self.record1, record])
+        time.sleep(TTL)
+        result = self.cache.lookup("a.", Type.A, Class.IN)
+        self.assertEqual(result, [self.record1])
+
+    def test_lookup_duplicate(self):
+        cache = RecordCache()
+        rdata1 = ARecordData("0.0.0.0")
+        rdata2 = ARecordData("0.0.0.0")
+        record1 = ResourceRecord(Name("a"), Type.A, Class.IN, 5, rdata1)
+        record2 = ResourceRecord(Name("a"), Type.A, Class.IN, 6, rdata2)
+        cache.add_record(record1)
+        cache.add_record(record2)
+        result = cache.lookup("a.", Type.A, Class.IN)
+        self.assertEqual(result, [record2])
 
     def test_filter_cache(self):
+        rdata1 = ARecordData("1.1.1.1")
+        rdata2 = CNAMERecordData(Name("a"))
+        record1 = ResourceRecord(Name("a"), Type.A, Class.IN, TTL, rdata1)
+        record2 = ResourceRecord(Name("b"), Type.CNAME, Class.IN, TTL, rdata2)
         cache = RecordCache()
-        r1 = ResourceRecord(Name("a"), Type.A, Class.IN, 1, ARecordData("0.0.0.0"))
-        r2 = ResourceRecord(Name("a"), Type.A, Class.IN, 1, ARecordData("1.1.1.1"))
-        cache.add_record(r1)
-        cache.add_record(r2)
-        time.sleep(1)
+        cache.add_record(record1)
+        cache.add_record(record2)
+        time.sleep(TTL)
         cache.filter_cache()
         self.assertEqual(cache.records, {})
 
@@ -109,6 +142,27 @@ class TestCache(TestCase):
 class TestResolverCache(TestCase):
     """Resolver tests with cache enabled"""
 
+    @classmethod
+    def setUpClass(cls):
+        cls.resolver = Resolver(TIMEOUT, True, 0)
+
+    def test_cached_hostname(self):
+        hostname = "invalid_address.com."
+        rdata = ARecordData("0.0.0.0")
+        record = ResourceRecord(Name(hostname), Type.A, Class.IN, 10, rdata)
+        self.resolver.cache.add_record(record)
+        result = self.resolver.gethostbyname(hostname)
+        self.assertEqual(result, (hostname, [], [str(rdata)]))
+        self.resolver.cache.remove_record_set(hostname)
+
+    def test_cached_hostname_ttl(self):
+        hostname = "invalid_address.com."
+        rdata = ARecordData("0.0.0.0")
+        record = ResourceRecord(Name(hostname), Type.A, Class.IN, TTL, rdata)
+        self.resolver.cache.add_record(record)
+        time.sleep(TTL)
+        result = self.resolver.gethostbyname(hostname)
+        self.assertEqual(result, (hostname, [], []))
 
 class TestServer(TestCase):
     """Server tests"""

@@ -31,6 +31,7 @@ def initialize_root_servers():
     return [str(zone.records[nameserver][0].rdata) for nameserver in nameservers]
 
 def initialize_cache():
+    """Load the cache from the cachefile and remove any invalid records"""
     cache = RecordCache()
     cache.read_cache_file("cache")
     cache.filter_cache()
@@ -52,6 +53,11 @@ class Resolver:
         self.timeout = timeout
         self.caching = caching
         self.ttl = ttl
+
+    def __del__(self):
+        """Write the cache to file at deletion"""
+        if self.caching:
+            self.cache.write_cache_file("cache")
 
     def send_and_receive_query(self, sock, hostname, nameserver):
         """ Create and send a query into the socket and receive a response.
@@ -105,6 +111,10 @@ class Resolver:
             if record.type_ == Type.NS:
                 name_servers.append(str(record.rdata))
 
+                # Add the NS record to cache if caching is enabled.
+                if self.caching:
+                    self.cache.add_record(record, self.ttl)
+
         # Replace any name servers with their IP address if an A
         # resource record is found in the additional section and
         # move them to the front of the list (prefer nameservers
@@ -117,7 +127,58 @@ class Resolver:
                     name_servers.insert(0, name_servers.pop(index))
                 except ValueError: pass
 
+                # Add the A record to cache if caching is enabled.
+                if self.caching:
+                    self.cache.add_record(record, self.ttl)
+
         return name_servers
+
+    def get_answers(self, response, hostname, aliaslist):
+        """Obtain all relevant answers from the answer section and
+        add them to the cache if caching is enabled.
+
+        Args:
+            answers [ResourceRecord]: the answer section
+            hostname (str): the hostname to resolve
+            aliaslist [str]: the list of alias domain names
+
+        Returns:
+            (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
+        """
+        ipaddrlist = []
+        for answer in response.answers:
+            if hostname == str(answer.name):
+                if answer.type_ == Type.CNAME:
+                    aliaslist.append(hostname)
+                    hostname = str(answer.rdata)
+                elif answer.type_ == Type.A:
+                    ipaddrlist.append(str(answer.rdata))
+
+                # Add the record to cache if caching is enabled.
+                if self.caching:
+                    self.cache.add_record(answer, self.ttl)
+
+        return (hostname, aliaslist, ipaddrlist)
+
+    def check_cache(self, hostname):
+        """Check the cache for an answer.
+
+        Args:
+            hostname (str): the hostname to resolve
+
+        Returns:
+            (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
+        """
+        aliaslist = []
+        record_set = self.cache.lookup(hostname, Type.CNAME, Class.IN)
+        while record_set:
+            aliaslist.append(hostname)
+            hostname = str(record_set[0].rdata)
+            record_set = self.cache.lookup(hostname, Type.CNAME, Class.IN)
+
+        record_set = self.cache.lookup(hostname, Type.A, Class.IN)
+        ipaddrlist = [str(record.rdata) for record in record_set]
+        return (hostname, aliaslist, ipaddrlist)
 
     def gethostbyname(self, hostname):
         """Translate a host name to IPv4 address.
@@ -128,10 +189,20 @@ class Resolver:
         Returns:
             (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
         """
+        hostname = str(Name(hostname))
+
+        aliaslist = []
+        if self.caching:
+            # Check the cache for answers:
+            hostname, aliaslist, ipaddrlist = self.check_cache(hostname)
+            if ipaddrlist:
+                # Result found in cache:
+                return hostname, aliaslist, ipaddrlist
+
+        # Start an iterative query for the answer:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(self.timeout)
-        hostname = str(Name(hostname))
-        result = self._gethostbyname(sock, hostname, self.root_servers, [])
+        result = self._gethostbyname(sock, hostname, self.root_servers, aliaslist)
         sock.close()
         return result
 
@@ -147,24 +218,16 @@ class Resolver:
         Returns:
             (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
         """
-
         while hints:
-            query, response = self.send_and_receive_query(sock, hostname, hints.pop(0))
+            query, response = self.send_and_receive_query(sock, hostname,
+                hints.pop(0))
             if self.is_valid_response(query, response):
 
                 # The response contains an answer:
                 if len(response.answers) > 0:
-                    ipaddrlist = []
-
                     # Get the data from the answer section.
-                    for answer in response.answers:
-                        if answer.type_ == Type.CNAME:
-                            if hostname == str(answer.name):
-                                aliaslist.append(hostname)
-                                hostname = str(answer.rdata)
-                        elif answer.type_ == Type.A:
-                            if hostname == str(answer.name):
-                                ipaddrlist.append(str(answer.rdata))
+                    hostname, aliaslist, ipaddrlist = self.get_answers(
+                        response, hostname, aliaslist)
 
                     # The answer contains an IP address:
                     if ipaddrlist:

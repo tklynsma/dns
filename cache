@@ -1,1 +1,182 @@
-[]
+[
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "anyc1.irondns.net."
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns.nic.cat."
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "cat.pch.net."
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "switch.nic.cat."
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns1.nic.es."
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "nsc.nic.de."
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "sns-pb.isc.org."
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "sns-pb.isc.org.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.5.4.1"
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "nsc.nic.de.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "81.91.161.84"
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "ns1.nic.es.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "194.69.254.1"
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "switch.nic.cat.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "130.59.31.29"
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "cat.pch.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "204.61.216.20"
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "ns.nic.cat.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "84.88.0.162"
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "anyc1.irondns.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "195.253.64.4"
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "nyan.cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "nsdname": "ns1.dreamhost.com."
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "nyan.cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "nsdname": "ns2.dreamhost.com."
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "nyan.cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "nsdname": "ns3.dreamhost.com."
+    },
+    "timestamp": 1492196773
+  },
+  {
+    "name": "nyan.cat.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 14389,
+    "rdata": {
+      "address": "208.97.169.68"
+    },
+    "timestamp": 1492196773
+  }
+]

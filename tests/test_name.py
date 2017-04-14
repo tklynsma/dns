@@ -26,6 +26,26 @@ class NameTestCase(unittest.TestCase):
         name = Name("")
         self.assertEqual(str(name), "")
 
+    def test_domain_name(self):
+        name = Name("example.com")
+        self.assertEqual(name.domain_name(-1), ".")
+
+    def test_domain_name1(self):
+        name = Name("example.com")
+        self.assertEqual(name.domain_name(0), ".")
+
+    def test_domain_name2(self):
+        name = Name("example.com")
+        self.assertEqual(name.domain_name(1), "com.")
+
+    def test_domain_name3(self):
+        name = Name("example.com")
+        self.assertEqual(name.domain_name(2), "example.com.")
+
+    def test_domain_name4(self):
+        name = Name("example.com")
+        self.assertEqual(name.domain_name(3), "example.com.")
+
     def test_name_eq1(self):
         name1 = Name("www.example.com")
         name2 = Name("www.example.com")

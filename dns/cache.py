@@ -34,13 +34,16 @@ class RecordCache:
         if not dname in self.records:
             return []
 
-        self.records[dname] = list(filter(lambda x : x.is_valid(), self.records[dname]))
+        # Remove all invalid records with dname.
+        self.records[dname] = [record for record in self.records[dname]
+            if record.is_valid()]
         if not self.records[dname]:
             del self.records[dname]
             return []
 
-        return list(filter(lambda x : x.type_ == type_ and x.class_ == class_,
-            self.records[dname]))
+        # Return all (valid) resource records with dname, type_, class_.
+        return [record for record in self.records[dname]
+            if record.type_ == type_ and record.class_ == class_]
 
     def add_record(self, record, ttl=0):
         """Add a new Record to the cache
@@ -53,7 +56,22 @@ class RecordCache:
             record.ttl = ttl
         if not str(record.name) in self.records:
             self.records[str(record.name)] = []
+
+        # Check for and remove duplicate data (assume the new data is correct)
+        self.records[str(record.name)] = [x for x in self.records[str(record.name)]
+            if x.rdata != record.rdata]
+
+        # Add the new record to the cache
         self.records[str(record.name)].append(record)
+
+    def remove_record_set(self, dname):
+        """Delete the record set for dname (for clearing up tests)
+
+        Args:
+            dname (str): domain name
+        """
+        if dname in self.records:
+            del self.records[dname]
 
     def read_cache_file(self, filename):
         """Read the cache file from disk"""
@@ -83,7 +101,7 @@ class RecordCache:
     def filter_cache(self):
         """Remove all invalid resource records"""
         for key, record_set in self.records.copy().items():
-            self.records[key] = list(filter(lambda x : x.is_valid(), record_set))
+            self.records[key] = [record for record in record_set if record.is_valid()]
             if not self.records[key]:
                 del self.records[key]
 

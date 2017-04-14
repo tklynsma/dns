@@ -35,6 +35,16 @@ class Name:
             result += label + "."
         return result
 
+    def domain_name(self, level):
+        """Return the top n levels of the domain name"""
+        if level <= 0:
+            return "."
+        result = ""
+        labels = self.labels[-level:]
+        for label in labels:
+            result += label + "."
+        return result
+
     def to_bytes(self, offset, compress=None):
         """Convert Name to bytes."""
         result = b""

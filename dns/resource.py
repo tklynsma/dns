@@ -15,10 +15,12 @@ import time
 from dns.classes import Class
 from dns.name import Name
 from dns.rtypes import Type
+from math import floor
 
 
 class ResourceRecord(object):
     """DNS resource record."""
+
     def __init__(self, name, type_, class_, ttl, rdata):
         """Create a new resource record.
 
@@ -33,7 +35,7 @@ class ResourceRecord(object):
         self.class_ = class_
         self.ttl = ttl
         self.rdata = rdata
-        self.timestamp = time.time()
+        self.timestamp = floor(time.time())
 
     def to_bytes(self, offset, compress):
         """Convert ResourceRecord to bytes."""
@@ -80,13 +82,16 @@ class ResourceRecord(object):
 
     def __eq__(self, other):
         """Compare resource records"""
-        return self.name == other.name and self.type_ == other.type_ \
-            and self.class_ == other.class_ and self.ttl == other.ttl \
-            and self.rdata == other.rdata and self.timestamp == other.timestamp
+        if isinstance(other, ResourceRecord):
+            return self.name == other.name and self.type_ == other.type_ \
+                and self.class_ == other.class_ and self.ttl == other.ttl \
+                and self.rdata == other.rdata and self.timestamp == other.timestamp
+        else:
+            return False
 
     def __str__(self):
         """Covert ResourceRecord to string."""
-        return "{0: <22}  {1: <6}  {2: <6}  {3: <6}  {4}  {5}".format(
+        return "{0: <22}  {1: <6}  {2: <6}  {3: <6}  {4}".format(
                 str(self.name), str(self.ttl), str(self.class_), str(self.type_),
                 str(self.rdata))
 
@@ -173,7 +178,10 @@ class ARecordData(RecordData):
 
     def __eq__(self, other):
         """Compare ARecordData"""
-        return self.address == other.address
+        if isinstance(other, ARecordData):
+            return self.address == other.address
+        else:
+            return False
 
     def __str__(self):
         """Covert ARecordData to string."""
@@ -223,7 +231,10 @@ class CNAMERecordData(RecordData):
 
     def __eq__(self, other):
         """Compare CNAMERecordData"""
-        return self.cname == other.cname
+        if isinstance(other, CNAMERecordData):
+            return self.cname == other.cname
+        else:
+            return False
 
     def __str__(self):
         """Covert CNAMERecordData to string."""
@@ -276,7 +287,10 @@ class NSRecordData(RecordData):
 
     def __eq__(self, other):
         """Compare NSRecordData"""
-        return self.nsdname == other.nsdname
+        if isinstance(other, NSRecordData):
+            return self.nsdname == other.nsdname
+        else:
+            return False
 
     def __str__(self):
         """Covert NSRecordData to string."""
