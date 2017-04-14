@@ -7,14 +7,13 @@ import os
 import sys
 import time
 import unittest
+
 from unittest import TestCase
 from argparse import ArgumentParser
 from dns.cache import RecordCache
 from dns.classes import Class
 from dns.resolver import Resolver
-from dns.resource import CNAMERecordData
-from dns.resource import ARecordData
-from dns.resource import ResourceRecord
+from dns.resource import CNAMERecordData, ARecordData, ResourceRecord
 from dns.rtypes import Type
 
 PORT = 5001
@@ -29,11 +28,12 @@ class TestResolver(TestCase):
     def setUpClass(cls):
         cls.resolver = Resolver(TIMEOUT, False, 0)
 
-    def test_valid_hostname(self):
+    def test_valid_hostname1(self):
         hostname = "gaia.cs.umass.edu"
         result = self.resolver.gethostbyname(hostname)
         self.assertEqual(result, (hostname, [], ['128.119.245.12']))
 
+    def test_valid_hostname2(self):
         hostname = "www.ru.nl"
         result = self.resolver.gethostbyname(hostname)
         self.assertEqual(result, ("wwwproxy.ru.nl", [hostname], ['131.174.78.60']))
@@ -53,10 +53,18 @@ class TestCache(TestCase):
         cls.r2 = ResourceRecord("a", Type.CNAME, Class.IN, 60, CNAMERecordData("b"))
         cls.r3 = ResourceRecord("a", Type.CNAME, Class.IN, 60, CNAMERecordData("c"))
 
-        cls.cache = RecordCache(0)
+        cls.cache = RecordCache("test_cache")
         cls.cache.add_record(cls.r1)
         cls.cache.add_record(cls.r2)
         cls.cache.add_record(cls.r3)
+
+    @classmethod
+    def tearDownClass(cls):
+        del cls.cache
+        try:
+            os.remove("test_cache")
+        except:
+            print("\nFailed to remove test_cache")
 
     def test_lookup(self):
         self.assertEqual(self.cache.lookup("a", Type.A, Class.IN), [self.r1])
@@ -71,28 +79,32 @@ class TestCache(TestCase):
         self.assertEqual(self.cache.lookup("a", Type.A, Class.IN), [self.r1])
 
     def test_filter_cache(self):
-        cache = RecordCache(1)
-        r1 = ResourceRecord("a", Type.A, Class.IN, 60, ARecordData("0.0.0.0"))
-        r2 = ResourceRecord("a", Type.A, Class.IN, 60, ARecordData("1.1.1.1"))
+        cache = RecordCache("test_cache")
+        r1 = ResourceRecord("a", Type.A, Class.IN, 1, ARecordData("0.0.0.0"))
+        r2 = ResourceRecord("a", Type.A, Class.IN, 1, ARecordData("1.1.1.1"))
         cache.add_record(r1)
         cache.add_record(r2)
         time.sleep(1)
         cache.filter_cache()
-        self.assertTrue(not "a" in cache.records)
         self.assertEqual(cache.records, {})
 
     def test_read_write_cache_file(self):
-        self.cache.write_cache_file("test_cache")
-        cache_copy = RecordCache(0)
-        cache_copy.read_cache_file("test_cache")
+        self.cache.write_cache_file()
+        cache_copy = RecordCache("test_cache")
+        cache_copy.read_cache_file()
         for key, record_set in self.cache.records.items():
             self.assertTrue(key in cache_copy.records)
             for i, record in enumerate(record_set):
                 self.assertEqual(record, cache_copy.records[key][i])
-        try:
-            os.remove("test_cache")
-        except:
-            print("\nFailed to remove test_cache")
+
+    def test_write_on_delete(self):
+        test_cache1 = RecordCache("test_cache")
+        record = ResourceRecord("c", Type.A, Class.IN, 60, ARecordData("0.0.0.0"))
+        test_cache1.add_record(record)
+        del test_cache1
+        test_cache2 = RecordCache("test_cache")
+        test_cache2.read_cache_file()
+        self.assertTrue("c" in test_cache2.records)
 
 
 class TestResolverCache(TestCase):

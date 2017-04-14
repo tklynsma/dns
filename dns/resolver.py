@@ -9,6 +9,7 @@ DNS server, but with a different list of servers.
 
 import socket
 
+from dns.cache import RecordCache
 from dns.classes import Class
 from dns.message import Message, Question, Header
 from dns.name import Name
@@ -29,10 +30,17 @@ def initialize_root_servers():
     nameservers = [str(record.rdata) for record in zone.records['.']]
     return [str(zone.records[nameserver][0].rdata) for nameserver in nameservers]
 
+def initialize_cache():
+    cache = RecordCache("cache")
+    cache.read_cache_file()
+    cache.filter_cache()
+    return cache
+
 
 class Resolver:
     """DNS resolver"""
     root_servers = initialize_root_servers()
+    cache = initialize_cache()
 
     def __init__(self, timeout, caching, ttl):
         """Initialize the resolver
@@ -172,7 +180,8 @@ class Resolver:
 
                 # The response does not contain an answer:
                 else: 
-                    # Update the hints with the NS records found in the authority section.
+                    # Update the hints with the NS records found in the authority
+                    # section.
                     hints = self.get_name_servers(response) + hints
 
         # Exhausted all hints.
