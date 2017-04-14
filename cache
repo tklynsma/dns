@@ -1,73 +1,83 @@
 [
   {
-    "name": "cat.",
+    "name": "nl.",
     "type": "NS",
     "class": "IN",
     "ttl": 172800,
     "rdata": {
-      "nsdname": "anyc1.irondns.net."
+      "nsdname": "nl1.dnsnode.net."
     },
-    "timestamp": 1492196773
+    "timestamp": 1492206974
   },
   {
-    "name": "cat.",
+    "name": "nl.",
     "type": "NS",
     "class": "IN",
     "ttl": 172800,
     "rdata": {
-      "nsdname": "ns.nic.cat."
+      "nsdname": "ns1.dns.nl."
     },
-    "timestamp": 1492196773
+    "timestamp": 1492206974
   },
   {
-    "name": "cat.",
+    "name": "nl.",
     "type": "NS",
     "class": "IN",
     "ttl": 172800,
     "rdata": {
-      "nsdname": "cat.pch.net."
+      "nsdname": "ns2.dns.nl."
     },
-    "timestamp": 1492196773
+    "timestamp": 1492206974
   },
   {
-    "name": "cat.",
+    "name": "nl.",
     "type": "NS",
     "class": "IN",
     "ttl": 172800,
     "rdata": {
-      "nsdname": "switch.nic.cat."
+      "nsdname": "ns3.dns.nl."
     },
-    "timestamp": 1492196773
+    "timestamp": 1492206974
   },
   {
-    "name": "cat.",
+    "name": "nl.",
     "type": "NS",
     "class": "IN",
     "ttl": 172800,
     "rdata": {
-      "nsdname": "ns1.nic.es."
+      "nsdname": "ns4.dns.nl."
     },
-    "timestamp": 1492196773
+    "timestamp": 1492206974
   },
   {
-    "name": "cat.",
+    "name": "nl.",
     "type": "NS",
     "class": "IN",
     "ttl": 172800,
     "rdata": {
-      "nsdname": "nsc.nic.de."
+      "nsdname": "ns5.dns.nl."
     },
-    "timestamp": 1492196773
+    "timestamp": 1492206974
   },
   {
-    "name": "cat.",
+    "name": "nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns-nl.nic.fr."
+    },
+    "timestamp": 1492206974
+  },
+  {
+    "name": "nl.",
     "type": "NS",
     "class": "IN",
     "ttl": 172800,
     "rdata": {
       "nsdname": "sns-pb.isc.org."
     },
-    "timestamp": 1492196773
+    "timestamp": 1492206974
   },
   {
     "name": "sns-pb.isc.org.",
@@ -77,27 +87,397 @@
     "rdata": {
       "address": "192.5.4.1"
     },
-    "timestamp": 1492196773
+    "timestamp": 1492207437
   },
   {
-    "name": "nsc.nic.de.",
+    "name": "ns-nl.nic.fr.",
     "type": "A",
     "class": "IN",
     "ttl": 172800,
     "rdata": {
-      "address": "81.91.161.84"
+      "address": "192.93.0.4"
     },
-    "timestamp": 1492196773
+    "timestamp": 1492206974
   },
   {
-    "name": "ns1.nic.es.",
+    "name": "ns5.dns.nl.",
     "type": "A",
     "class": "IN",
     "ttl": 172800,
     "rdata": {
-      "address": "194.69.254.1"
+      "address": "194.0.28.53"
     },
-    "timestamp": 1492196773
+    "timestamp": 1492206974
+  },
+  {
+    "name": "ns4.dns.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "95.142.99.212"
+    },
+    "timestamp": 1492206974
+  },
+  {
+    "name": "ns3.dns.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "194.171.17.10"
+    },
+    "timestamp": 1492206974
+  },
+  {
+    "name": "ns2.dns.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "213.154.241.85"
+    },
+    "timestamp": 1492206974
+  },
+  {
+    "name": "ns1.dns.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "193.176.144.5"
+    },
+    "timestamp": 1492206974
+  },
+  {
+    "name": "nl1.dnsnode.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "194.146.106.42"
+    },
+    "timestamp": 1492206974
+  },
+  {
+    "name": "ru.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "ns3.ru.nl."
+    },
+    "timestamp": 1492206974
+  },
+  {
+    "name": "ru.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "ns1.surfnet.nl."
+    },
+    "timestamp": 1492206974
+  },
+  {
+    "name": "ru.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "ns4.ru.nl."
+    },
+    "timestamp": 1492206974
+  },
+  {
+    "name": "ns4.ru.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "address": "131.174.78.17"
+    },
+    "timestamp": 1492206974
+  },
+  {
+    "name": "ns3.ru.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "address": "131.174.78.16"
+    },
+    "timestamp": 1492206974
+  },
+  {
+    "name": "ns1.surfnet.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "address": "192.87.106.101"
+    },
+    "timestamp": 1492206974
+  },
+  {
+    "name": "cs.ru.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "nsdname": "ns1.science.ru.nl."
+    },
+    "timestamp": 1492206979
+  },
+  {
+    "name": "cs.ru.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "nsdname": "ns2.science.ru.nl."
+    },
+    "timestamp": 1492206979
+  },
+  {
+    "name": "cs.ru.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "address": "131.174.8.6"
+    },
+    "timestamp": 1492206979
+  },
+  {
+    "name": "ns1.science.ru.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "address": "131.174.224.4"
+    },
+    "timestamp": 1492207269
+  },
+  {
+    "name": "ns2.science.ru.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "address": "131.174.16.133"
+    },
+    "timestamp": 1492207269
+  },
+  {
+    "name": "nu.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "ns01.sanomaservices.nl."
+    },
+    "timestamp": 1492207037
+  },
+  {
+    "name": "nu.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "ns03.sanomaservices.net."
+    },
+    "timestamp": 1492207037
+  },
+  {
+    "name": "nu.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "ns02.sanomaservices.com."
+    },
+    "timestamp": 1492207037
+  },
+  {
+    "name": "ns01.sanomaservices.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "address": "52.209.32.138"
+    },
+    "timestamp": 1492207037
+  },
+  {
+    "name": "lcl.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "dns1.domeinbalie.nl."
+    },
+    "timestamp": 1492207677
+  },
+  {
+    "name": "lcl.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "dns2.domeinbalie.org."
+    },
+    "timestamp": 1492207677
+  },
+  {
+    "name": "lcl.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "dns0.domeinbalie.nl."
+    },
+    "timestamp": 1492207677
+  },
+  {
+    "name": "lcl.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 300,
+    "rdata": {
+      "address": "77.72.149.197"
+    },
+    "timestamp": 1492207677
+  },
+  {
+    "name": "dns1.domeinbalie.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "address": "94.228.133.222"
+    },
+    "timestamp": 1492207677
+  },
+  {
+    "name": "dns0.domeinbalie.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "address": "213.206.89.183"
+    },
+    "timestamp": 1492207677
+  },
+  {
+    "name": "science.ru.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "nsdname": "ns2.science.ru.nl."
+    },
+    "timestamp": 1492207269
+  },
+  {
+    "name": "science.ru.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "nsdname": "ns1.science.ru.nl."
+    },
+    "timestamp": 1492207269
+  },
+  {
+    "name": "new-devices-lab.cs.ru.nl.",
+    "type": "CNAME",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "cname": "wiki.science.ru.nl."
+    },
+    "timestamp": 1492207246
+  },
+  {
+    "name": "wiki.science.ru.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "address": "131.174.8.71"
+    },
+    "timestamp": 1492207246
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns.nic.cat."
+    },
+    "timestamp": 1492207437
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "cat.pch.net."
+    },
+    "timestamp": 1492207437
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns1.nic.es."
+    },
+    "timestamp": 1492207437
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "nsc.nic.de."
+    },
+    "timestamp": 1492207437
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "anyc1.irondns.net."
+    },
+    "timestamp": 1492207437
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "sns-pb.isc.org."
+    },
+    "timestamp": 1492207437
+  },
+  {
+    "name": "cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "switch.nic.cat."
+    },
+    "timestamp": 1492207437
   },
   {
     "name": "switch.nic.cat.",
@@ -107,27 +487,7 @@
     "rdata": {
       "address": "130.59.31.29"
     },
-    "timestamp": 1492196773
-  },
-  {
-    "name": "cat.pch.net.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "address": "204.61.216.20"
-    },
-    "timestamp": 1492196773
-  },
-  {
-    "name": "ns.nic.cat.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "address": "84.88.0.162"
-    },
-    "timestamp": 1492196773
+    "timestamp": 1492207437
   },
   {
     "name": "anyc1.irondns.net.",
@@ -137,17 +497,47 @@
     "rdata": {
       "address": "195.253.64.4"
     },
-    "timestamp": 1492196773
+    "timestamp": 1492207437
   },
   {
-    "name": "nyan.cat.",
-    "type": "NS",
+    "name": "nsc.nic.de.",
+    "type": "A",
     "class": "IN",
-    "ttl": 86400,
+    "ttl": 172800,
     "rdata": {
-      "nsdname": "ns1.dreamhost.com."
+      "address": "81.91.161.84"
     },
-    "timestamp": 1492196773
+    "timestamp": 1492207437
+  },
+  {
+    "name": "ns1.nic.es.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "194.69.254.1"
+    },
+    "timestamp": 1492207437
+  },
+  {
+    "name": "cat.pch.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "204.61.216.20"
+    },
+    "timestamp": 1492207437
+  },
+  {
+    "name": "ns.nic.cat.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "84.88.0.162"
+    },
+    "timestamp": 1492207437
   },
   {
     "name": "nyan.cat.",
@@ -157,7 +547,17 @@
     "rdata": {
       "nsdname": "ns2.dreamhost.com."
     },
-    "timestamp": 1492196773
+    "timestamp": 1492207438
+  },
+  {
+    "name": "nyan.cat.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "nsdname": "ns1.dreamhost.com."
+    },
+    "timestamp": 1492207438
   },
   {
     "name": "nyan.cat.",
@@ -167,16 +567,666 @@
     "rdata": {
       "nsdname": "ns3.dreamhost.com."
     },
-    "timestamp": 1492196773
+    "timestamp": 1492207438
   },
   {
     "name": "nyan.cat.",
     "type": "A",
     "class": "IN",
-    "ttl": 14389,
+    "ttl": 14400,
     "rdata": {
       "address": "208.97.169.68"
     },
-    "timestamp": 1492196773
+    "timestamp": 1492207438
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "a.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "b.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "c.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "d.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "e.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "f.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "g.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "h.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "i.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "j.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "k.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "l.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "m.gtld-servers.net."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "m.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.55.83.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "l.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.41.162.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "k.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.52.178.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "j.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.48.79.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "i.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.43.172.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "h.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.54.112.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "g.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.42.93.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "f.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.35.51.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "e.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.12.94.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "d.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.31.80.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "c.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.26.92.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "b.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.33.14.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "a.gtld-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "192.5.6.30"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "bol.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "pro-dns-auth-001.bol.com."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "bol.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "pro-dns-auth-002.bol.com."
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "bol.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 300,
+    "rdata": {
+      "address": "185.14.169.113"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "pro-dns-auth-002.bol.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "185.14.169.221"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "pro-dns-auth-001.bol.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "185.14.168.221"
+    },
+    "timestamp": 1492207449
+  },
+  {
+    "name": "yahoo.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns1.yahoo.com."
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "yahoo.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns5.yahoo.com."
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "yahoo.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns2.yahoo.com."
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "yahoo.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns3.yahoo.com."
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "yahoo.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns4.yahoo.com."
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "yahoo.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 1800,
+    "rdata": {
+      "address": "98.139.183.24"
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "yahoo.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 1800,
+    "rdata": {
+      "address": "206.190.36.45"
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "yahoo.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 1800,
+    "rdata": {
+      "address": "98.138.253.109"
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "ns4.yahoo.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "98.138.11.157"
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "ns3.yahoo.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "203.84.221.53"
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "ns2.yahoo.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "68.142.255.16"
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "ns5.yahoo.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "119.160.247.124"
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "ns1.yahoo.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "68.180.131.16"
+    },
+    "timestamp": 1492207456
+  },
+  {
+    "name": "example.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "a.iana-servers.net."
+    },
+    "timestamp": 1492207477
+  },
+  {
+    "name": "example.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "b.iana-servers.net."
+    },
+    "timestamp": 1492207477
+  },
+  {
+    "name": "example.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "address": "93.184.216.34"
+    },
+    "timestamp": 1492207477
+  },
+  {
+    "name": "b.iana-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "199.43.133.53"
+    },
+    "timestamp": 1492207477
+  },
+  {
+    "name": "a.iana-servers.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "199.43.135.53"
+    },
+    "timestamp": 1492207477
+  },
+  {
+    "name": "deviantart.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns-154.awsdns-19.com."
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "deviantart.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns-997.awsdns-60.net."
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "deviantart.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns-1119.awsdns-11.org."
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "deviantart.com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "ns-1796.awsdns-32.co.uk."
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "deviantart.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 60,
+    "rdata": {
+      "address": "54.192.129.93"
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "deviantart.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 60,
+    "rdata": {
+      "address": "54.192.129.102"
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "deviantart.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 60,
+    "rdata": {
+      "address": "54.192.129.177"
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "deviantart.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 60,
+    "rdata": {
+      "address": "54.192.129.31"
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "deviantart.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 60,
+    "rdata": {
+      "address": "54.192.129.197"
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "deviantart.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 60,
+    "rdata": {
+      "address": "54.192.129.157"
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "deviantart.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 60,
+    "rdata": {
+      "address": "54.192.129.162"
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "deviantart.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 60,
+    "rdata": {
+      "address": "54.192.129.78"
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "ns-997.awsdns-60.net.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "205.251.195.229"
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "ns-154.awsdns-19.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "address": "205.251.192.154"
+    },
+    "timestamp": 1492207648
+  },
+  {
+    "name": "onsnet.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "ns2.cloud.tele2.nl."
+    },
+    "timestamp": 1492207668
+  },
+  {
+    "name": "onsnet.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "ns1.cloud.tele2.nl."
+    },
+    "timestamp": 1492207668
   }
 ]

@@ -160,7 +160,7 @@ class Resolver:
 
         return (hostname, aliaslist, ipaddrlist)
 
-    def check_cache(self, hostname):
+    def check_cache_for_answer(self, hostname):
         """Check the cache for an answer.
 
         Args:
@@ -180,6 +180,42 @@ class Resolver:
         ipaddrlist = [str(record.rdata) for record in record_set]
         return (hostname, aliaslist, ipaddrlist)
 
+    def check_cache_for_hints(self, hostname):
+        """Find the highest domain level name server hints in the cache for the
+        given hostname.
+
+        Args:
+            hostname (str): the hostname to resolve
+
+        Returns:
+            [str]: a list containing the found name servers
+        """
+        name = Name(hostname)
+        for level in reversed(range(1, len(name.labels))):
+            # Find all nameservers for the top n levels of the domain name.
+            domain = name.domain_name(level)
+            record_set = self.cache.lookup(domain, Type.NS, Class.IN)
+            name_servers = [str(record.rdata) for record in record_set]
+            hints = []
+
+            # For each nameserver add its IP address to the list of hints
+            # if found in the cache, otherwise add the name server.
+            for name_server in reversed(name_servers):
+                record_set = self.cache.lookup(name_server, Type.A, Class.IN)
+                ipaddrlist = [str(record.rdata) for record in record_set]
+                if ipaddrlist:
+                    hints = ipaddrlist + hints
+                else:
+                    hints.insert(0, name_server)
+
+            # Return the found name server addresses (if any), otherwise start
+            # searching for name servers one domain level higher.
+            if hints:
+                return hints
+
+        # No name servers in cache found:
+        return []
+
     def gethostbyname(self, hostname):
         """Translate a host name to IPv4 address.
 
@@ -190,19 +226,9 @@ class Resolver:
             (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
         """
         hostname = str(Name(hostname))
-
-        aliaslist = []
-        if self.caching:
-            # Check the cache for answers:
-            hostname, aliaslist, ipaddrlist = self.check_cache(hostname)
-            if ipaddrlist:
-                # Result found in cache:
-                return hostname, aliaslist, ipaddrlist
-
-        # Start an iterative query for the answer:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(self.timeout)
-        result = self._gethostbyname(sock, hostname, self.root_servers, aliaslist)
+        result = self._gethostbyname(sock, hostname, self.root_servers, [])
         sock.close()
         return result
 
@@ -218,6 +244,19 @@ class Resolver:
         Returns:
             (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
         """
+        # Consult the cache if caching is enabled:
+        if self.caching:
+            # Check the cache for an answer.
+            hostname, aliaslist, ipaddrlist = self.check_cache_for_answer(hostname)
+            if ipaddrlist:
+                # Result found in cache:
+                return hostname, aliaslist, ipaddrlist
+
+            # Check the cache for name server hints.
+            name_servers = self.check_cache_for_hints(hostname)
+            if name_servers:
+                hints = name_servers
+
         while hints:
             query, response = self.send_and_receive_query(sock, hostname,
                 hints.pop(0))
