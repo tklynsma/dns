@@ -80,7 +80,7 @@ class ResourceRecord(object):
 
     def __eq__(self, other):
         """Compare resource records"""
-        return str(self.name) == str(other.name) and self.type_ == other.type_ \
+        return self.name == other.name and self.type_ == other.type_ \
             and self.class_ == other.class_ and self.ttl == other.ttl \
             and self.rdata == other.rdata and self.timestamp == other.timestamp
 
@@ -177,7 +177,7 @@ class ARecordData(RecordData):
 
     def __str__(self):
         """Covert ARecordData to string."""
-        return str(self.address)
+        return self.address
 
 
 class CNAMERecordData(RecordData):
@@ -223,7 +223,7 @@ class CNAMERecordData(RecordData):
 
     def __eq__(self, other):
         """Compare CNAMERecordData"""
-        return str(self.cname) == str(other.cname)
+        return self.cname == other.cname
 
     def __str__(self):
         """Covert CNAMERecordData to string."""
