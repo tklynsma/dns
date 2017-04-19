@@ -166,7 +166,7 @@ class Resolver:
 
         return (hostname, aliaslist, ipaddrlist)
 
-    def check_cache_for_answer(self, hostname):
+    def check_cache_for_answer(self, hostname, aliaslist):
         """Check the cache for an answer.
 
         Args:
@@ -175,7 +175,6 @@ class Resolver:
         Returns:
             (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
         """
-        aliaslist = []
         record_set = self.cache.lookup(hostname, Type.CNAME, Class.IN)
         while record_set:
             aliaslist.append(hostname)
@@ -257,7 +256,8 @@ class Resolver:
         # Consult the cache if caching is enabled:
         if self.caching:
             # Check the cache for an answer.
-            hostname, aliaslist, ipaddrlist = self.check_cache_for_answer(hostname)
+            hostname, aliaslist, ipaddrlist = self.check_cache_for_answer(hostname,
+                aliaslist)
             if ipaddrlist:
                 # Result found in cache:
                 self.vprint(";; Found answer in cache:")
@@ -270,8 +270,8 @@ class Resolver:
 
         while hints:
             name_server = hints.pop(0)
-            query, response = self.send_and_receive_query(sock, hostname, name_server)
             self.vprint(";; Quering nameserver {}".format(name_server))
+            query, response = self.send_and_receive_query(sock, hostname, name_server)
             if self.is_valid_response(query, response):
 
                 # The response contains an answer:
