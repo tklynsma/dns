@@ -55,9 +55,14 @@ class Resolver:
         self.ttl = ttl
 
     def __del__(self):
-        """Write the cache to file at deletion"""
+        """Write cache contents to cache file on deletion."""
         if self.caching:
             self.cache.write_cache_file("cache")
+
+    def vprint(self, message):
+        """Verbose print help function."""
+        if self.verbose:
+            print(message)
 
     def send_and_receive_query(self, sock, hostname, nameserver):
         """ Create and send a query into the socket and receive a response.
@@ -151,6 +156,7 @@ class Resolver:
                 if answer.type_ == Type.CNAME:
                     aliaslist.append(hostname)
                     hostname = str(answer.rdata)
+                    self.vprint(";; Found alias in response: {}".format(hostname))
                 elif answer.type_ == Type.A:
                     ipaddrlist.append(str(answer.rdata))
 
@@ -174,6 +180,7 @@ class Resolver:
         while record_set:
             aliaslist.append(hostname)
             hostname = str(record_set[0].rdata)
+            self.vprint(";; Found alias in cache: {}".format(hostname))
             record_set = self.cache.lookup(hostname, Type.CNAME, Class.IN)
 
         record_set = self.cache.lookup(hostname, Type.A, Class.IN)
@@ -206,17 +213,18 @@ class Resolver:
                 if ipaddrlist:
                     hints = ipaddrlist + hints
                 else:
-                    hints.insert(0, name_server)
+                    hints.append(name_server)
 
             # Return the found name server addresses (if any), otherwise start
             # searching for name servers one domain level higher.
             if hints:
+                self.vprint(";; Found hints in cache for domain: {}".format(domain))
                 return hints
 
         # No name servers in cache found:
         return []
 
-    def gethostbyname(self, hostname):
+    def gethostbyname(self, hostname, verbose=False):
         """Translate a host name to IPv4 address.
 
         Args:
@@ -225,10 +233,11 @@ class Resolver:
         Returns:
             (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
         """
+        self.verbose = verbose
         hostname = str(Name(hostname))
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(self.timeout)
-        result = self._gethostbyname(sock, hostname, self.root_servers, [])
+        result = self._gethostbyname(sock, hostname, self.root_servers.copy(), [])
         sock.close()
         return result
 
@@ -244,12 +253,14 @@ class Resolver:
         Returns:
             (str, [str], [str]): (hostname, aliaslist, ipaddrlist)
         """
+
         # Consult the cache if caching is enabled:
         if self.caching:
             # Check the cache for an answer.
             hostname, aliaslist, ipaddrlist = self.check_cache_for_answer(hostname)
             if ipaddrlist:
                 # Result found in cache:
+                self.vprint(";; Found answer in cache:")
                 return hostname, aliaslist, ipaddrlist
 
             # Check the cache for name server hints.
@@ -258,8 +269,9 @@ class Resolver:
                 hints = name_servers
 
         while hints:
-            query, response = self.send_and_receive_query(sock, hostname,
-                hints.pop(0))
+            name_server = hints.pop(0)
+            query, response = self.send_and_receive_query(sock, hostname, name_server)
+            self.vprint(";; Quering nameserver {}".format(name_server))
             if self.is_valid_response(query, response):
 
                 # The response contains an answer:
@@ -271,6 +283,7 @@ class Resolver:
                     # The answer contains an IP address:
                     if ipaddrlist:
                         # Return the answer.
+                        self.vprint(";; Found answer in response:")
                         return hostname, aliaslist, ipaddrlist
 
                     # The answer does not contain an IP address:
@@ -278,7 +291,7 @@ class Resolver:
                         # Start a new query to the hostname found in the CNAME record 
                         # using any additional nameservers found in the authority 
                         # section as initial hints.
-                        hints = self.get_name_servers(response) + self.root_servers
+                        hints = self.get_name_servers(response) + self.root_servers.copy()
                         return self._gethostbyname(sock, hostname, hints, aliaslist)
 
                 # The response does not contain an answer:

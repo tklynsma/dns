@@ -64,15 +64,6 @@ class RecordCache:
         # Add the new record to the cache
         self.records[str(record.name)].append(record)
 
-    def remove_record_set(self, dname):
-        """Delete the record set for dname (for clearing up tests)
-
-        Args:
-            dname (str): domain name
-        """
-        if dname in self.records:
-            del self.records[dname]
-
     def read_cache_file(self, filename):
         """Read the cache file from disk"""
         dcts = []

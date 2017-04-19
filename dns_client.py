@@ -17,10 +17,13 @@ def resolve():
                         help="Enable caching")
     parser.add_argument("-t", "--ttl", metavar="time", type=int, default=0,
                         help="TTL value of cached entries (if > 0)")
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        help="Enable verbose output")
     args = parser.parse_args()
 
     resolver = Resolver(args.timeout, args.caching, args.ttl)
-    hostname, aliaslist, ipaddrlist = resolver.gethostbyname(args.hostname)
+    hostname, aliaslist, ipaddrlist = resolver.gethostbyname(args.hostname,
+        verbose=args.verbose)
 
     print(hostname)
     print(aliaslist)

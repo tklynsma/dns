@@ -31,29 +31,34 @@ class TestResolver(TestCase):
         cls.resolver = Resolver(TIMEOUT, False, 0)
 
     def test_valid_hostname1(self):
+        """Solve valid FQDN."""
         hostname = "gaia.cs.umass.edu."
         result = self.resolver.gethostbyname(hostname)
         self.assertEqual(result, (hostname, [], ['128.119.245.12']))
 
     def test_valid_hostname2(self):
+        """Solve valid FQDN with one alias."""
         hostname = "www.ru.nl."
         result = self.resolver.gethostbyname(hostname)
         self.assertEqual(result, ("wwwproxy.ru.nl.", [hostname], ['131.174.78.60']))
 
     def test_valid_hostname3(self):
+        """Solve valid FQDN with two aliases."""
         hostname = "www.gmail.com."
         result = self.resolver.gethostbyname(hostname)
         self.assertEqual(result, ("googlemail.l.google.com.",
             [hostname, "mail.google.com."], ["172.217.17.69"]))
 
     def test_valid_hostname3(self):
-        hostname1 = "nyan.cat"
-        hostname2 = "nyan.cat."
+        """Test equal output for input with and without trailing dot."""
+        hostname1 = "google.nl"
+        hostname2 = "google.nl."
         result1 = self.resolver.gethostbyname(hostname1)
         result2 = self.resolver.gethostbyname(hostname2)
         self.assertEqual(result1, result2)
 
     def test_invalid_hostname(self):
+        """Solve invalid FQDN, empty output generated."""
         hostname = "invalid_address.com."
         result = self.resolver.gethostbyname(hostname)
         self.assertEqual(result, (hostname, [], [])) 
@@ -85,18 +90,22 @@ class TestCache(TestCase):
             print("\nFailed to remove test_cache")
 
     def test_lookup1(self):
+        """Test cache lookup for A records."""
         result = self.cache.lookup("a.", Type.A, Class.IN)
         self.assertEqual(result, [self.record1])
 
     def test_lookup2(self):
+        """Test cache lookup for CNAME records."""
         result = self.cache.lookup("a.", Type.CNAME, Class.IN)
         self.assertEqual(result, [self.record2, self.record3])
 
     def test_lookup3(self):
+        """Test cache lookup for non-existing records, output should be empty."""
         result = self.cache.lookup("b.", Type.A, Class.IN)
         self.assertEqual(result, [])
 
-    def test_lookup_ttl(self):
+    def test_ttl(self):
+        """Test cache lookup for exceeded ttl, record should not be included in answer."""
         rdata = ARecordData("1.1.1.1")
         record = ResourceRecord(Name("a"), Type.A, Class.IN, TTL, rdata)
         self.cache.add_record(record)
@@ -106,19 +115,21 @@ class TestCache(TestCase):
         result = self.cache.lookup("a.", Type.A, Class.IN)
         self.assertEqual(result, [self.record1])
 
-    def test_lookup_duplicate(self):
+    def test_add_duplicate(self):
+        """Test adding duplicate data, only the last added record should be in cache."""
         cache = RecordCache()
-        rdata1 = ARecordData("0.0.0.0")
-        rdata2 = ARecordData("0.0.0.0")
-        record1 = ResourceRecord(Name("a"), Type.A, Class.IN, 5, rdata1)
-        record2 = ResourceRecord(Name("a"), Type.A, Class.IN, 6, rdata2)
+        rdata1 = ARecordData("2.2.2.2")
+        rdata2 = ARecordData("2.2.2.2")
+        record1 = ResourceRecord(Name("a"), Type.A, Class.IN, 1, rdata1)
+        record2 = ResourceRecord(Name("a"), Type.A, Class.IN, 1, rdata2)
         cache.add_record(record1)
         cache.add_record(record2)
         result = cache.lookup("a.", Type.A, Class.IN)
         self.assertEqual(result, [record2])
 
     def test_filter_cache(self):
-        rdata1 = ARecordData("1.1.1.1")
+        """Test cache filtering for exceeded ttl."""
+        rdata1 = ARecordData("5.5.5.5")
         rdata2 = CNAMERecordData(Name("a"))
         record1 = ResourceRecord(Name("a"), Type.A, Class.IN, TTL, rdata1)
         record2 = ResourceRecord(Name("b"), Type.CNAME, Class.IN, TTL, rdata2)
@@ -130,6 +141,7 @@ class TestCache(TestCase):
         self.assertEqual(cache.records, {})
 
     def test_read_write_cache_file(self):
+        """Test cache file reading and writing."""
         self.cache.write_cache_file("test_cache")
         cache_copy = RecordCache()
         cache_copy.read_cache_file("test_cache")
@@ -145,24 +157,64 @@ class TestResolverCache(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.resolver = Resolver(TIMEOUT, True, 0)
+        cls.resolver.cache.clear_cache()
 
-    def test_cached_hostname(self):
-        hostname = "invalid_address.com."
+    def test_cached_hostname1(self):
+        """Solve an invalid cached FQDN, output corresponds to cache."""
+        hostname = "invalid_address1.com."
         rdata = ARecordData("0.0.0.0")
-        record = ResourceRecord(Name(hostname), Type.A, Class.IN, 10, rdata)
+        record = ResourceRecord(Name(hostname), Type.A, Class.IN, 1, rdata)
         self.resolver.cache.add_record(record)
         result = self.resolver.gethostbyname(hostname)
-        self.assertEqual(result, (hostname, [], [str(rdata)]))
-        self.resolver.cache.remove_record_set(hostname)
+        self.assertEqual(result, (hostname, [], ["0.0.0.0"]))
 
-    def test_cached_hostname_ttl(self):
-        hostname = "invalid_address.com."
-        rdata = ARecordData("0.0.0.0")
+    def test_cached_hostname2(self):
+        """Solve an invalid cached CNAME and FQDN, output corresponds to cache."""
+        hostname1 = "invalid_address2.com."
+        hostname2 = "invalid_address3.com."
+        rdata1 = CNAMERecordData(Name(hostname2))
+        rdata2 = ARecordData("1.1.1.1")
+        record1 = ResourceRecord(Name(hostname1), Type.CNAME, Class.IN, 1, rdata1)
+        record2 = ResourceRecord(Name(hostname2), Type.A, Class.IN, 1, rdata2)
+        self.resolver.cache.add_record(record1)
+        self.resolver.cache.add_record(record2)
+        result = self.resolver.gethostbyname(hostname1)
+        self.assertEqual(result, (hostname2, [hostname1], ["1.1.1.1"]))
+
+    def test_cached_hostname3(self):
+        """Solve invalid cached CNAME chain, output corresponds to alias (google.nl.)"""
+        hostname1 = "invalid_address4.com."
+        hostname2 = "invalid_address5.com."
+        hostname3 = "google.nl."
+        rdata1 = CNAMERecordData(Name(hostname2))
+        rdata2 = CNAMERecordData(Name(hostname3))
+        record1 = ResourceRecord(Name(hostname1), Type.CNAME, Class.IN, 1, rdata1)
+        record2 = ResourceRecord(Name(hostname2), Type.CNAME, Class.IN, 1, rdata2)
+        self.resolver.cache.add_record(record1)
+        self.resolver.cache.add_record(record2)
+        result = self.resolver.gethostbyname(hostname1)
+        self.assertEqual(result, (hostname3, [hostname1, hostname2], ["172.217.17.67"]))
+
+    def test_cached_hostname4(self):
+        """Wait TTL time for an invalid cached FQDN to expire, output is empty."""
+        hostname = "invalid_address6.com."
+        rdata = ARecordData("2.2.2.2")
         record = ResourceRecord(Name(hostname), Type.A, Class.IN, TTL, rdata)
         self.resolver.cache.add_record(record)
         time.sleep(TTL)
         result = self.resolver.gethostbyname(hostname)
         self.assertEqual(result, (hostname, [], []))
+        
+    def test_shared_cache(self):
+        """Test shared cache between resolvers."""
+        resolver2 = Resolver(TIMEOUT, True, 0)
+        hostname = "invalid_address7.com."
+        rdata = ARecordData("3.3.3.3")
+        record = ResourceRecord(Name(hostname), Type.A, Class.IN, 1, rdata)
+        resolver2.cache.add_record(record)
+        result = self.resolver.gethostbyname(hostname)
+        self.assertEqual(result, (hostname, [], ["3.3.3.3"]))
+
 
 class TestServer(TestCase):
     """Server tests"""
