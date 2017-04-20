@@ -15,6 +15,7 @@ from dns.message import Message, Question, Header
 from dns.name import Name
 from dns.rtypes import Type
 from dns.rcodes import RCode
+from dns.util import vprint
 from dns.zone import Zone
 from enum import Enum
 
@@ -43,7 +44,7 @@ class Resolver:
     root_servers = initialize_root_servers()
     cache = initialize_cache()
 
-    def __init__(self, timeout, caching, ttl):
+    def __init__(self, timeout, caching, ttl, ident=9001):
         """Initialize the resolver
 
         Args:
@@ -53,16 +54,12 @@ class Resolver:
         self.timeout = timeout
         self.caching = caching
         self.ttl = ttl
+        self.ident = ident
 
     def __del__(self):
         """Write cache contents to cache file on deletion."""
         if self.caching:
             self.cache.write_cache_file("cache")
-
-    def vprint(self, message):
-        """Verbose print help function."""
-        if self.verbose:
-            print(message)
 
     def send_and_receive_query(self, sock, hostname, nameserver):
         """ Create and send a query into the socket and receive a response.
@@ -76,7 +73,7 @@ class Resolver:
             (Message, Message): the query and response messages
         """
         question = Question(Name(hostname), Type.A, Class.IN)
-        header = Header(9001, 0, 1, 0, 0, 0)
+        header = Header(self.ident, 0, 1, 0, 0, 0)
         header.qr, header.opcode, header.rd = 0, 0, 0
         query = Message(header, [question])
         try:
@@ -156,7 +153,8 @@ class Resolver:
                 if answer.type_ == Type.CNAME:
                     aliaslist.append(hostname)
                     hostname = str(answer.rdata)
-                    self.vprint(";; Found alias in response: {}".format(hostname))
+                    vprint(";; Found alias in response: {}".format(hostname),
+                        self.verbose)
                 elif answer.type_ == Type.A:
                     ipaddrlist.append(str(answer.rdata))
 
@@ -179,7 +177,7 @@ class Resolver:
         while record_set:
             aliaslist.append(hostname)
             hostname = str(record_set[0].rdata)
-            self.vprint(";; Found alias in cache: {}".format(hostname))
+            vprint(";; Found alias in cache: {}".format(hostname), self.verbose)
             record_set = self.cache.lookup(hostname, Type.CNAME, Class.IN)
 
         record_set = self.cache.lookup(hostname, Type.A, Class.IN)
@@ -197,7 +195,7 @@ class Resolver:
             [str]: a list containing the found name servers
         """
         name = Name(hostname)
-        for level in reversed(range(1, len(name.labels))):
+        for level in reversed(range(1, len(name.labels) + 1)):
             # Find all nameservers for the top n levels of the domain name.
             domain = name.domain_name(level)
             record_set = self.cache.lookup(domain, Type.NS, Class.IN)
@@ -217,7 +215,8 @@ class Resolver:
             # Return the found name server addresses (if any), otherwise start
             # searching for name servers one domain level higher.
             if hints:
-                self.vprint(";; Found hints in cache for domain: {}".format(domain))
+                vprint(";; Found hints in cache for domain: {}".format(domain),
+                    self.verbose)
                 return hints
 
         # No name servers in cache found:
@@ -260,7 +259,7 @@ class Resolver:
                 aliaslist)
             if ipaddrlist:
                 # Result found in cache:
-                self.vprint(";; Found answer in cache:")
+                vprint(";; Found answer in cache:", self.verbose)
                 return hostname, aliaslist, ipaddrlist
 
             # Check the cache for name server hints.
@@ -270,7 +269,7 @@ class Resolver:
 
         while hints:
             name_server = hints.pop(0)
-            self.vprint(";; Quering nameserver {}".format(name_server))
+            vprint(";; Quering nameserver {}".format(name_server), self.verbose)
             query, response = self.send_and_receive_query(sock, hostname, name_server)
             if self.is_valid_response(query, response):
 
@@ -283,7 +282,7 @@ class Resolver:
                     # The answer contains an IP address:
                     if ipaddrlist:
                         # Return the answer.
-                        self.vprint(";; Found answer in response:")
+                        vprint(";; Found answer in response:", self.verbose)
                         return hostname, aliaslist, ipaddrlist
 
                     # The answer does not contain an IP address:

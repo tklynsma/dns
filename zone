@@ -1,13 +1,16 @@
 ; Zone file for ru.nl.
 
-ru.nl.          3600    IN  NS      ns3.ru.nl.
-ru.nl.          3600    IN  NS      ns4.ru.nl.
-ru.nl.          3600    IN  NS      ns1.surfnet.nl.
+cs.ru.nl.                   86400   NS      ns1.science.ru.nl.
+cs.ru.nl.                   86400   NS      ns2.science.ru.nl.
+cs.ru.nl.                   86400   NS      ns3.science.ru.nl.
+science.ru.nl.              86400   NS      ns1.science.ru.nl.
+science.ru.nl.              86400   NS      ns2.science.ru.nl.
+science.ru.nl.              86400   NS      ns3.science.ru.nl.
 
-ns3.ru.nl.      3600    IN  A       131.174.78.16
-ns4.ru.nl.      3600    IN  A       131.174.78.17
-ns1.surfnet.nl. 3600    IN  A       192.87.106.101
-ns1.surfnet.nl. 3600    IN  AAAA    2001:610:1:800a:192:87:106:101
+ns1.science.ru.nl.          86400   A       131.174.224.4
+ns2.science.ru.nl.          86400   A       131.174.16.133
+ns3.science.ru.nl.          86400   A       131.174.30.34
 
-www.ru.nl.      600     IN  CNAME   wwwproxy.ru.nl.
-wwwproxy.ru.nl. 600     IN  A       131.174.78.60
+www.ru.nl.                  600     CNAME   wwwproxy.ru.nl.
+wwwproxy.ru.nl.             600     A       131.174.78.60
+ru.nl.                      600     A       131.174.78.60

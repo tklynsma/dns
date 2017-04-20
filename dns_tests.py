@@ -49,7 +49,7 @@ class TestResolver(TestCase):
         self.assertEqual(result, ("googlemail.l.google.com.",
             [hostname, "mail.google.com."], ["172.217.17.69"]))
 
-    def test_valid_hostname3(self):
+    def test_valid_hostname4(self):
         """Test equal output for input with and without trailing dot."""
         hostname1 = "google.nl"
         hostname2 = "google.nl."
