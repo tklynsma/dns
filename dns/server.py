@@ -8,8 +8,11 @@ server using the algorithm described in section 4.3.2 of RFC 1034.
 
 import socket
 
+from dns.classes import Class
 from dns.message import Header, Message
 from dns.name import Name
+from dns.resolver import Resolver
+from dns.resource import ResourceRecord, ARecordData, CNAMERecordData
 from dns.rtypes import Type
 from dns.util import vprint
 from dns.zone import Zone
@@ -19,11 +22,13 @@ from threading import Thread
 class RequestHandler(Thread):
     """A handler for requests to the DNS server"""
 
-    def __init__(self, query, sock, address, zone, caching, ttl, verbose=False):
+    def __init__(self, query, sock, address, zone, caching, ttl,
+            verbose=False):
         """Initialize the handler thread"""
         super().__init__()
         self.daemon = True
         self.query = query
+        self.id = query.header.ident
         self.sock = sock
         self.address = address
         self.zone = zone
@@ -31,7 +36,8 @@ class RequestHandler(Thread):
         self.ttl = ttl
         self.verbose = verbose
 
-    def send_response(self, questions, answers, authorities, additionals, aa):
+    def send_response(self, questions, answers, authorities, additionals, aa=False,
+            rcode=0):
         """Send a response message into the socket containing the provided question,
         answers, authorities and additional sections.
 
@@ -41,22 +47,22 @@ class RequestHandler(Thread):
             authorities ([ResourceRecord]): the authority section.
             additionals ([ResourceRecord]): the additional section.
             aa (Bool): flag indicating an authorative answer.
+            rcode (int): the response code
         """
-        header = Header(self.query.header.ident, 0, 1, len(answers), len(authorities),
+        header = Header(self.id, 0, 1, len(answers), len(authorities),
             len(additionals))
-        header.qr, header.opcode, header.ra, header.aa = 1, 0, 1, 1 if aa else 0
+        header.qr, header.opcode, header.ra = 1, 0, 1
         header.rd = self.query.header.rd
+        header.aa = 1 if aa else 0
+        header.rcode = rcode
         response = Message(header, [questions[0]], answers, authorities, additionals)
 
         try:
             self.sock.sendto(response.to_bytes(), self.address)
-            vprint(";; {}: Authorative response send to {}".format(
-                self.query.header.ident, self.address), self.verbose and aa)
-            vprint(";; {}: Response send to {}".format(self.query.header.ident,
-                self.address), self.verbose and not aa)
+            vprint("Response send to {}, port {}, rcode = {}".format(self.address[0], 
+                self.address[1], rcode), self.id, self.verbose)
         except socket.error:
-            vprint(";; {}: Error sending response.".format(self.query.header.ident,
-                self.verbose))
+            vprint("Error sending response.", self.id, self.verbose)
 
     def check_zone_for_answer(self, hostname):
         """Check the zonefile for an answer.
@@ -65,17 +71,17 @@ class RequestHandler(Thread):
             hostname (str): the hostname being queried
 
         Returns:
-            (str, [ResourceRecord]): (hostname, answers)
+            (str, [ResourceRecord], [ResourceRecord]): (hostname, cnames, answers)
         """
-        answers = []
+        cnames = []
         record_set = self.zone.lookup(hostname, Type.CNAME)
         while record_set:
-            answers = answers + record_set
+            cnames = cnames + record_set
             hostname = str(record_set[0].rdata)
             record_set = self.zone.lookup(hostname, Type.CNAME)
 
-        answers = answers + self.zone.lookup(hostname, Type.A)
-        return (hostname, answers)
+        answers = self.zone.lookup(hostname, Type.A)
+        return (hostname, cnames, answers)
 
     def check_zone_for_hints(self, hostname):
         """Check the zonefile for name server hints.
@@ -105,17 +111,67 @@ class RequestHandler(Thread):
         # No name servers in zonefile found:
         return [], []
 
+    def resolve(self, hostname):
+        """Use the DNS resolver to answer the query.
+
+        Args:
+            hostname (str): the hostname to resolve
+        """
+        resolver = Resolver(2, self.caching, self.ttl, self.id)
+        hostname, aliaslist, ipaddrlist = resolver.gethostbyname(hostname,
+            verbose=self.verbose)
+        aliaslist.append(hostname)
+        cnames = [ResourceRecord(Name(aliaslist[i]), Type.CNAME, Class.IN, 60,
+            CNAMERecordData(Name(aliaslist[i+1]))) for i in range(len(aliaslist)-1)]
+        answers = [ResourceRecord(Name(hostname), Type.A, Class.IN, 60,
+            ARecordData(address)) for address in ipaddrlist]
+        self.send_response(self.query.questions, cnames + answers, [], [], [])
+
     def run(self):
         """ Run the handler thread"""
-        hostname = str(self.query.questions[0].qname)
-        vprint(";; {}: Query for domain name {}".format(self.query.header.ident,
-            hostname), self.verbose)
 
-        hostname, answers = self.check_zone_for_answer(hostname)
-        authorities, additionals = self.check_zone_for_hints(hostname)
-        if answers or authorities or additionals:
-            self.send_response(self.query.questions, answers, authorities,
-                additionals, True)
+        # If the question's qtype if not of type A: send back a response with rcode 4
+        # (not implemented)
+        if self.query.questions[0].qtype != Type.A:
+            vprint("Invalid query type", self.id, self.verbose)
+            self.send_response(self.query.questions, [], [], [], rcode=4)
+
+        # Query is of type A:
+        else:
+            hostname = str(self.query.questions[0].qname)
+            vprint("Query for domain: {}".format(hostname), self.id, self.verbose)
+            hostname, cnames, answers = self.check_zone_for_answer(hostname)
+            authorities, additionals = self.check_zone_for_hints(hostname)
+
+            # If an answer was found in the zonefile return an authorative answer.
+            if answers:
+                vprint("Answer found in zonefile.", self.id, self.verbose)
+                self.send_response(self.query.questions, cnames + answers,
+                    authorities, additionals, aa=True)
+
+            else:
+                vprint("No answer found in zonefile.", self.id, self.verbose)
+
+                # Recursion is not desired:
+                if self.query.header.rd == 0:
+                    # If other records were found in the zonefile return an
+                    # authorative answer.
+                    if cnames or authorities or additionals:
+                        vprint("Authorative response.", self.id, self.verbose)
+                        self.send_response(self.query.questions, cnames + answers,
+                            authorities, additionals, aa=True)
+
+                    # If no records were found send back a response with rcode 5
+                    # (refused)
+                    else:
+                        vprint("No records in zonefile, query refused.", self.id, self.verbose)
+                        self.send_response(self.query.questions, [], [], [], rcode=5)
+
+                # Recursion is desired:
+                else:
+                    vprint("Recursion desired, starting resolver.", self.id,
+                        self.verbose)
+                    self.resolve(hostname)
 
 
 class Server:
@@ -137,6 +193,18 @@ class Server:
         self.zone = Zone()
         self.zone.read_master_file("zone")
 
+    def is_valid_query(self, query):
+        """Check whether the query is a valid DNS query of qtype A.
+
+        Args:
+            query (Message): the received query
+        Returns:
+            Bool: true iff the query is a valid DNS query.
+        """
+        return query.header.qr == 0 \
+            and query.header.opcode == 0 \
+            and query.header.qd_count > 0
+
     def receive_valid_query(self, sock):
         """Attempt to receive a valid DNS query, return None otherwise.
 
@@ -148,8 +216,7 @@ class Server:
         try:
             data, address = sock.recvfrom(512)
             message = Message.from_bytes(data)
-            if message.header.qr == 0 and message.header.opcode == 0 \
-                    and message.header.qd_count > 0:
+            if self.is_valid_query(message):
                 return message, address
             else:
                 return None, address
@@ -165,8 +232,8 @@ class Server:
         while not self.done:
             query, address = self.receive_valid_query(sock)
             if query is not None:
-                vprint(";; DNS query received (id {}), starting request handler."
-                    .format(query.header.ident), self.verbose)
+                vprint("Valid DNS query received, starting request handler.",
+                    query.header.ident, self.verbose)
                 handler = RequestHandler(query, sock, address, self.zone,
                     self.caching, self.ttl, self.verbose)
                 handler.start()

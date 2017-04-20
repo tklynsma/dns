@@ -54,7 +54,7 @@ class Resolver:
         self.timeout = timeout
         self.caching = caching
         self.ttl = ttl
-        self.ident = ident
+        self.id = ident
 
     def __del__(self):
         """Write cache contents to cache file on deletion."""
@@ -73,7 +73,7 @@ class Resolver:
             (Message, Message): the query and response messages
         """
         question = Question(Name(hostname), Type.A, Class.IN)
-        header = Header(self.ident, 0, 1, 0, 0, 0)
+        header = Header(self.id, 0, 1, 0, 0, 0)
         header.qr, header.opcode, header.rd = 0, 0, 0
         query = Message(header, [question])
         try:
@@ -153,7 +153,7 @@ class Resolver:
                 if answer.type_ == Type.CNAME:
                     aliaslist.append(hostname)
                     hostname = str(answer.rdata)
-                    vprint(";; Found alias in response: {}".format(hostname),
+                    vprint("Found alias in response: {}".format(hostname), self.id,
                         self.verbose)
                 elif answer.type_ == Type.A:
                     ipaddrlist.append(str(answer.rdata))
@@ -177,7 +177,8 @@ class Resolver:
         while record_set:
             aliaslist.append(hostname)
             hostname = str(record_set[0].rdata)
-            vprint(";; Found alias in cache: {}".format(hostname), self.verbose)
+            vprint("Found alias in cache: {}".format(hostname), self.id,
+                self.verbose)
             record_set = self.cache.lookup(hostname, Type.CNAME, Class.IN)
 
         record_set = self.cache.lookup(hostname, Type.A, Class.IN)
@@ -215,8 +216,8 @@ class Resolver:
             # Return the found name server addresses (if any), otherwise start
             # searching for name servers one domain level higher.
             if hints:
-                vprint(";; Found hints in cache for domain: {}".format(domain),
-                    self.verbose)
+                vprint("Found hints in cache for domain: {}".format(domain),
+                    self.id, self.verbose)
                 return hints
 
         # No name servers in cache found:
@@ -259,7 +260,7 @@ class Resolver:
                 aliaslist)
             if ipaddrlist:
                 # Result found in cache:
-                vprint(";; Found answer in cache:", self.verbose)
+                vprint("Found answer in cache.", self.id, self.verbose)
                 return hostname, aliaslist, ipaddrlist
 
             # Check the cache for name server hints.
@@ -269,7 +270,7 @@ class Resolver:
 
         while hints:
             name_server = hints.pop(0)
-            vprint(";; Quering nameserver {}".format(name_server), self.verbose)
+            vprint("Quering nameserver {}".format(name_server), self.id, self.verbose)
             query, response = self.send_and_receive_query(sock, hostname, name_server)
             if self.is_valid_response(query, response):
 
@@ -282,7 +283,7 @@ class Resolver:
                     # The answer contains an IP address:
                     if ipaddrlist:
                         # Return the answer.
-                        vprint(";; Found answer in response:", self.verbose)
+                        vprint("Found answer in response.", self.id, self.verbose)
                         return hostname, aliaslist, ipaddrlist
 
                     # The answer does not contain an IP address:
