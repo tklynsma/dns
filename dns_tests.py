@@ -55,8 +55,8 @@ class TestResolver(TestCase):
 
     def test_valid_hostname4(self):
         """Test equal output for input with and without trailing dot."""
-        hostname1 = "google.nl"
-        hostname2 = "google.nl."
+        hostname1 = "gaia.cs.umass.edu"
+        hostname2 = "gaia.cs.umass.edu."
         result1 = self.resolver.gethostbyname(hostname1)
         result2 = self.resolver.gethostbyname(hostname2)
         self.assertEqual(result1, result2)
@@ -189,7 +189,7 @@ class TestResolverCache(TestCase):
         """Solve invalid cached CNAME chain, output IP corresponds to alias"""
         hostname1 = "invalid_address4.com."
         hostname2 = "invalid_address5.com."
-        hostname3 = "google.nl."
+        hostname3 = "gaia.cs.umass.edu."
         rdata1 = CNAMERecordData(Name(hostname2))
         rdata2 = CNAMERecordData(Name(hostname3))
         record1 = ResourceRecord(Name(hostname1), Type.CNAME, Class.IN, 1, rdata1)
@@ -198,7 +198,7 @@ class TestResolverCache(TestCase):
         self.resolver.cache.add_record(record2)
         result = self.resolver.gethostbyname(hostname1)
         self.assertEqual(result, (hostname3, [hostname1, hostname2],
-            ["172.217.17.67"]))
+            ['128.119.245.12']))
 
     def test_cached_hostname4(self):
         """Wait TTL time for an invalid cached FQDN to expire, output is empty."""
@@ -326,9 +326,9 @@ class TestServer(TestCase):
 
     def test_server_resolver1(self):
         """Solve a query for a FQDN which points outside your zone, with recursion"""
-        response = self.send_and_receive_query("google.nl.", True)
+        response = self.send_and_receive_query("gaia.cs.umass.edu.", True)
         self.assertEqual(response.header.aa, 0)
-        self.assertEqual(str(response.answers[0].rdata), "172.217.17.67")
+        self.assertEqual(str(response.answers[0].rdata), '128.119.245.12')
 
     def test_server_resolver2(self):
         """Solve a query for a FQDN for which your server does not have direct
@@ -390,7 +390,7 @@ class TestServer(TestCase):
 
     def test_server_rcode5(self):
         """Solve a query for a FQDN which points outside your zone, no recursion"""
-        response = self.send_and_receive_query("google.nl.", False)
+        response = self.send_and_receive_query("gaia.cs.umass.edu.", False)
         self.assertEqual(response.header.rcode, 5)
         self.assertEqual(response.header.an_count, 0)
         self.assertEqual(response.header.ns_count, 0)
