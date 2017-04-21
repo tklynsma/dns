@@ -69,22 +69,22 @@ The server listens for incoming datagrams and, if the datagram is a valid DNS qu
 If any of these conditions fail then the datagram is simply ignored.
 
 ### Request handler
-Each request handler runs in a separate thread, resolves the query and sends a response back to the datagram's source address. First, the handler checks whether the question's _QTYPE_ is of type _A_. If not, a response is send back with _RCODE_ 4 (not implemented). Otherwise, the handler will continue by consolting its _zone_:
+Each request handler runs in a separate thread, resolves the query and sends a response back to the datagram's source address. Concurrency is ensured by protecting the cache against concurrent access and by matching responses in the resolver to their DNS transaction ID. When sending a response the handler sets the header's _QR_ and _RA_ bits to 1, meaning the message is  a response and recursion is available on the server. The header's _RD_ bit is copied from the query and the _AA_ bit is set in case of an authorative response.
+
+First, the handler checks whether the question's _QTYPE_ is of type _A_. If not, an empty response is send back with _RCODE_ 4 (not implemented). Otherwise, the handler will continue by consulting its _zone_:
 
 1. Check the _zone_ for _CNAME_ resource records matching the _hostname_. While there is still a valid _CNAME_ record to be found in the _zone_: add the record to the list of _cnames_ and change the current _hostname_ to the canonical name found in _rdata_.
 
 2. Check the _zone_ for _A_ resource records matching the _hostname_ and save these records in _answers_.
 
-3. Check the _zone_ for _NS_ resource records. Start matching down the labels in _hostname_, starting at _hostname_ and moving up to the root, until any matching _NS_ resource records are found. If found; lookup matching _A_ resource records in the _zone_.
+3. Check the _zone_ for _NS_ resource records. Start matching down the labels in _hostname_, starting at _hostname_ and moving up to (but excluding) the root, until any matching _NS_ resource records are found. If found; lookup matching _A_ resource records in the _zone_.
 
-4. If _answers_ is non-empty: return an authorative response (_AA_ bit set to 1) to the datagram's source address containing all found records.
+4. If _answers_ is non-empty: return an authorative response to the datagram's source address containing all found records.
 
 The next steps depend on whether the query has its _RD_ bit set or not. If no recursion is desired the request handler executes the following steps:
 
 1. If any _CNAME_ or _NS_ records were found in the _zone_ then send back an authorative response to the datagram's source address containing all found records.
 
-2. If no records were found the _hostname_ points outside of the server's _zone_. A response is send back with _RCODE_ 5 (refused).
+2. If no records were found the _hostname_ points outside of the server's _zone_. An empty response is send back with _RCODE_ 5 (refused).
 
-If it cannot find an answer using _zone_ resolution and recursion is desired, then the resolver is used to answer the query. If the resolver finds an answer it is send back to the datagram's source address. If not, then a response is send back with RCODE 3 (name error).
-
-When sending a response the handler sets the response's _QR_ and _RA_ bits to 1, meaning
+If it cannot find an answer using _zone_ resolution and recursion is desired, then the resolver is used to answer the query. When solving a recursive query the resolver will use the same transaction ID as the original query. If the resolver finds an answer it is send back to the datagram's source address. If not, an empty response is send back with RCODE 3 (name error).
