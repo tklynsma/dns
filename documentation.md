@@ -81,10 +81,8 @@ First, the handler checks whether the question's _QTYPE_ is of type _A_. If not,
 
 4. If _answers_ is non-empty: return an authorative response to the datagram's source address containing all found records.
 
-The next steps depend on whether the query has its _RD_ bit set or not. If no recursion is desired the request handler executes the following steps:
+1. If no recursion is desired and other records were found in the server's _zone_: send back an authorative response to the datagram's source address containing all found records.
 
-1. If any _CNAME_ or _NS_ records were found in the _zone_ then send back an authorative response to the datagram's source address containing all found records.
+2. If no recursion is desired and no records were found, then the _hostname_ points outside of the server's _zone_. An empty response is send back with _RCODE_ 5 (refused).
 
-2. If no records were found the _hostname_ points outside of the server's _zone_. An empty response is send back with _RCODE_ 5 (refused).
-
-If it cannot find an answer using _zone_ resolution and recursion is desired, then the resolver is used to answer the query. When solving a recursive query the resolver will use the same transaction ID as the original query. If the resolver finds an answer it is send back to the datagram's source address. If not, an empty response is send back with RCODE 3 (name error).
+3. If recursion is desired and no answer was found using zone resolution, then the resolver is used to answer the query. When solving a recursive query the resolver will use the same transaction ID as the original query. If the resolver finds an answer it is send back to the datagram's source address. If not, an empty response is send back with _RCODE_ 3 (name error).
