@@ -3,10 +3,32 @@
 ...
 
 ## File structure
-...
+* proj1_s4471393
+    * dns
+        * cache.py: Contains a cache for the resolver; implemented as a dictionary.
+        * classes.py: Enum of CLASSes and QCLASSes.
+        * domainname.py: Classes for reading and writing domain names as bytes.
+        * message.py: Classes for DNS messages.
+        * rcodes.py: Enum of RCODEs.
+        * resolver.py: Class for the DNS resolver.
+        * resource.py: Classes for DNS resource records.
+        * server.py: Contains the DNS server.
+        * types.py: Enum of TYPEs and QTYPEs.
+        * zone.py: name space zones.
+        * util.py: Contains help function.
+    * dns_client.py: A simple DNS client, which serves as an example user of the resolver.
+    * dns_server.py: Code for starting the DNS server and parsing args.
+    * dns_tests.py: Tests for the resolver, cache and server.
+
+## Usage
+Usage is as described in the assignment. In addition a "verbose" output option has been added to both dns_client.py and dns_server.py. To use this add the parameter ```-v``` or ```--verbose```. When running the server with its default settings (_localhost_ using port 5353) it was tested using the following _dig_ command:
+
+```
+$ dig @localhost hostname -p 5353 +noedns [+norec]
+```
 
 ## Resolver
-Name resolution of roughly follows the algorithm described in [Section 5.3.3 of RFC 1034](https://tools.ietf.org/html/rfc1034##section-5.3.3). At creation, the list of root servers is initialized using the zone file _root_ (see [root hints](https://www.internic.net/domain/named.root)). The cache is read from the json cachefile _cache_. The cache is shared between _all_ resolver instances and written back to the cachefile at deletion.
+Name resolution roughly follows the algorithm described in [Section 5.3.3 of RFC 1034](https://tools.ietf.org/html/rfc1034##section-5.3.3). At creation, the list of root servers is initialized using the zone file _root_ (see [root hints](https://www.internic.net/domain/named.root)). The cache is read from the json cachefile _cache_. The cache is shared between _all_ resolver instances and written back to the cachefile at deletion.
 
 #### Consulting the cache
 When caching is enabled the resolver will first attempt to resolve the _hostname_ using the cache:
@@ -34,7 +56,7 @@ If the cache was unsuccesful in resolving the _hostname_ or caching was disabled
 5. When the list of hints is exhausted and no answer is found: output the hostname and empty lists for the aliases and IP addresses.
 
 ## Cache
-For efficient lookup the cache is implemented as a dictionary; with domain names as keys. 
+For efficient lookup the cache is implemented as a dictionary; with domain names as keys. The cachefile is read from and stored on disk using _json_ format. 
 
 ## Name server
 ...
