@@ -66,7 +66,7 @@ The server listens for incoming datagrams and, if the datagram is a valid DNS qu
 *   The message's _QR_ bit is set to zero, indicating a query.
 *   The message contains at least one resource record in its question section.
 
-If any of these conditions fail then the datagram is simply ignored.
+If any of these conditions fail then the datagram is ignored.
 
 ### Request handler
 Each request handler runs in a separate thread, resolves the query and sends a response back to the datagram's source address. Concurrency is ensured by protecting the cache against concurrent access and by matching responses in the resolver to their DNS transaction ID. When sending a response the handler sets the header's _QR_ and _RA_ bits to 1, meaning the message is  a response and recursion is available on the server. The header's _RD_ bit is copied from the query and the _AA_ bit is set in case of an authorative response.
@@ -77,7 +77,7 @@ First, the handler checks whether the question's _QTYPE_ is of type _A_. If not,
 
 2. Check the _zone_ for _A_ resource records matching the _hostname_ and save these records in _answers_.
 
-3. Check the _zone_ for _NS_ resource records. Start matching down the labels in _hostname_, starting at _hostname_ and moving up to (but excluding) the root, until any matching _NS_ resource records are found. If found; lookup matching _A_ resource records in the _zone_.
+3. Check the _zone_ for _NS_ resource records. Start matching down the labels in _hostname_, starting at _hostname_ and moving up to (but excluding) the root, until any matching _NS_ resource records are found. If found, look up matching _A_ resource records in the _zone_.
 
 4. If _answers_ is non-empty: return an authorative response to the datagram's source address containing all found records.
 
