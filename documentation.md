@@ -17,7 +17,7 @@ When caching is enabled the resolver will first attempt to resolve the _hostname
 #### Building an iterative query
 If the cache was unsuccesful in resolving the _hostname_ or caching was disabled the resolver will build an iterative query:
 
-1. Select and remove the first name server in the list of _hints_ and send it a query for the _hostname_. The header's _QR_, _OPCODE_ and _RD_ bits are all set to zero. This tells the receiving name server that the message is a standard query and that no recursion is desired. If the list of _hints_ is empty go to step 5.
+1. Select and remove the first name server in the list of _hints_ and send a query for the _hostname_. The header's _QR_, _OPCODE_ and _RD_ bits are all set to zero. This tells the receiving name server that the message is a standard query and that no recursion is desired. If the list of _hints_ is empty go to step 5.
 2. Check whether the response message (if any) is valid. The response is considered valid if the following conditions hold:
     * No unexpected error was encountered when sending or receiving datagrams. This includes timeout exceptions.
     * The response has a _RCODE_ of zero, indicating that no errors occurred.
