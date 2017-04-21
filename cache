@@ -1,5 +1,55 @@
 [
   {
+    "name": "invalid_address1.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 1,
+    "rdata": {
+      "address": "0.0.0.0"
+    },
+    "timestamp": 1492769617
+  },
+  {
+    "name": "invalid_address2.com.",
+    "type": "CNAME",
+    "class": "IN",
+    "ttl": 1,
+    "rdata": {
+      "cname": "invalid_address3.com."
+    },
+    "timestamp": 1492769617
+  },
+  {
+    "name": "invalid_address3.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 1,
+    "rdata": {
+      "address": "1.1.1.1"
+    },
+    "timestamp": 1492769617
+  },
+  {
+    "name": "invalid_address4.com.",
+    "type": "CNAME",
+    "class": "IN",
+    "ttl": 1,
+    "rdata": {
+      "cname": "invalid_address5.com."
+    },
+    "timestamp": 1492769617
+  },
+  {
+    "name": "invalid_address5.com.",
+    "type": "CNAME",
+    "class": "IN",
+    "ttl": 1,
+    "rdata": {
+      "cname": "google.nl."
+    },
+    "timestamp": 1492769617
+  },
+  {
     "name": "nl.",
     "type": "NS",
     "class": "IN",
@@ -7,7 +57,7 @@
     "rdata": {
       "nsdname": "nl1.dnsnode.net."
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "nl.",
@@ -17,7 +67,7 @@
     "rdata": {
       "nsdname": "ns1.dns.nl."
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "nl.",
@@ -27,7 +77,7 @@
     "rdata": {
       "nsdname": "ns2.dns.nl."
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "nl.",
@@ -37,7 +87,7 @@
     "rdata": {
       "nsdname": "ns3.dns.nl."
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "nl.",
@@ -47,7 +97,7 @@
     "rdata": {
       "nsdname": "ns4.dns.nl."
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "nl.",
@@ -57,7 +107,7 @@
     "rdata": {
       "nsdname": "ns5.dns.nl."
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "nl.",
@@ -67,7 +117,7 @@
     "rdata": {
       "nsdname": "ns-nl.nic.fr."
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "nl.",
@@ -77,7 +127,7 @@
     "rdata": {
       "nsdname": "sns-pb.isc.org."
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "sns-pb.isc.org.",
@@ -87,7 +137,7 @@
     "rdata": {
       "address": "192.5.4.1"
     },
-    "timestamp": 1492722394
+    "timestamp": 1492769617
   },
   {
     "name": "ns-nl.nic.fr.",
@@ -97,7 +147,7 @@
     "rdata": {
       "address": "192.93.0.4"
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "ns5.dns.nl.",
@@ -107,7 +157,7 @@
     "rdata": {
       "address": "194.0.28.53"
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "ns4.dns.nl.",
@@ -117,7 +167,7 @@
     "rdata": {
       "address": "95.142.99.212"
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "ns3.dns.nl.",
@@ -127,7 +177,7 @@
     "rdata": {
       "address": "194.171.17.10"
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "ns2.dns.nl.",
@@ -137,7 +187,7 @@
     "rdata": {
       "address": "213.154.241.85"
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "ns1.dns.nl.",
@@ -147,7 +197,7 @@
     "rdata": {
       "address": "193.176.144.5"
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "nl1.dnsnode.net.",
@@ -157,37 +207,7 @@
     "rdata": {
       "address": "194.146.106.42"
     },
-    "timestamp": 1492722249
-  },
-  {
-    "name": "google.nl.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 3600,
-    "rdata": {
-      "nsdname": "ns2.google.com."
-    },
-    "timestamp": 1492722249
-  },
-  {
-    "name": "google.nl.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 3600,
-    "rdata": {
-      "nsdname": "ns4.google.com."
-    },
-    "timestamp": 1492722249
-  },
-  {
-    "name": "google.nl.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 3600,
-    "rdata": {
-      "nsdname": "ns1.google.com."
-    },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
   },
   {
     "name": "google.nl.",
@@ -197,7 +217,37 @@
     "rdata": {
       "nsdname": "ns3.google.com."
     },
-    "timestamp": 1492722249
+    "timestamp": 1492769617
+  },
+  {
+    "name": "google.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "ns2.google.com."
+    },
+    "timestamp": 1492769617
+  },
+  {
+    "name": "google.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "ns4.google.com."
+    },
+    "timestamp": 1492769617
+  },
+  {
+    "name": "google.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 3600,
+    "rdata": {
+      "nsdname": "ns1.google.com."
+    },
+    "timestamp": 1492769617
   },
   {
     "name": "google.nl.",
@@ -207,107 +257,7 @@
     "rdata": {
       "address": "172.217.17.67"
     },
-    "timestamp": 1492722249
-  },
-  {
-    "name": "com.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "b.gtld-servers.net."
-    },
-    "timestamp": 1492722264
-  },
-  {
-    "name": "com.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "l.gtld-servers.net."
-    },
-    "timestamp": 1492722264
-  },
-  {
-    "name": "com.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "k.gtld-servers.net."
-    },
-    "timestamp": 1492722264
-  },
-  {
-    "name": "com.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "g.gtld-servers.net."
-    },
-    "timestamp": 1492722264
-  },
-  {
-    "name": "com.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "c.gtld-servers.net."
-    },
-    "timestamp": 1492722264
-  },
-  {
-    "name": "com.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "j.gtld-servers.net."
-    },
-    "timestamp": 1492722264
-  },
-  {
-    "name": "com.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "e.gtld-servers.net."
-    },
-    "timestamp": 1492722264
-  },
-  {
-    "name": "com.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "a.gtld-servers.net."
-    },
-    "timestamp": 1492722264
-  },
-  {
-    "name": "com.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "m.gtld-servers.net."
-    },
-    "timestamp": 1492722264
-  },
-  {
-    "name": "com.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "i.gtld-servers.net."
-    },
-    "timestamp": 1492722264
+    "timestamp": 1492769617
   },
   {
     "name": "com.",
@@ -317,7 +267,7 @@
     "rdata": {
       "nsdname": "f.gtld-servers.net."
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "com.",
@@ -325,9 +275,9 @@
     "class": "IN",
     "ttl": 172800,
     "rdata": {
-      "nsdname": "d.gtld-servers.net."
+      "nsdname": "m.gtld-servers.net."
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "com.",
@@ -337,7 +287,107 @@
     "rdata": {
       "nsdname": "h.gtld-servers.net."
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "c.gtld-servers.net."
+    },
+    "timestamp": 1492769632
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "b.gtld-servers.net."
+    },
+    "timestamp": 1492769632
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "k.gtld-servers.net."
+    },
+    "timestamp": 1492769632
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "d.gtld-servers.net."
+    },
+    "timestamp": 1492769632
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "l.gtld-servers.net."
+    },
+    "timestamp": 1492769632
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "g.gtld-servers.net."
+    },
+    "timestamp": 1492769632
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "i.gtld-servers.net."
+    },
+    "timestamp": 1492769632
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "e.gtld-servers.net."
+    },
+    "timestamp": 1492769632
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "j.gtld-servers.net."
+    },
+    "timestamp": 1492769632
+  },
+  {
+    "name": "com.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 172800,
+    "rdata": {
+      "nsdname": "a.gtld-servers.net."
+    },
+    "timestamp": 1492769632
   },
   {
     "name": "m.gtld-servers.net.",
@@ -347,7 +397,7 @@
     "rdata": {
       "address": "192.55.83.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "l.gtld-servers.net.",
@@ -357,7 +407,7 @@
     "rdata": {
       "address": "192.41.162.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "k.gtld-servers.net.",
@@ -367,7 +417,7 @@
     "rdata": {
       "address": "192.52.178.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "j.gtld-servers.net.",
@@ -377,7 +427,7 @@
     "rdata": {
       "address": "192.48.79.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "i.gtld-servers.net.",
@@ -387,7 +437,7 @@
     "rdata": {
       "address": "192.43.172.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "h.gtld-servers.net.",
@@ -397,7 +447,7 @@
     "rdata": {
       "address": "192.54.112.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "g.gtld-servers.net.",
@@ -407,7 +457,7 @@
     "rdata": {
       "address": "192.42.93.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "f.gtld-servers.net.",
@@ -417,7 +467,7 @@
     "rdata": {
       "address": "192.35.51.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "e.gtld-servers.net.",
@@ -427,7 +477,7 @@
     "rdata": {
       "address": "192.12.94.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "d.gtld-servers.net.",
@@ -437,7 +487,7 @@
     "rdata": {
       "address": "192.31.80.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "c.gtld-servers.net.",
@@ -447,7 +497,7 @@
     "rdata": {
       "address": "192.26.92.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "b.gtld-servers.net.",
@@ -457,7 +507,7 @@
     "rdata": {
       "address": "192.33.14.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
     "name": "a.gtld-servers.net.",
@@ -467,417 +517,117 @@
     "rdata": {
       "address": "192.5.6.30"
     },
-    "timestamp": 1492722264
+    "timestamp": 1492769632
   },
   {
-    "name": "radboud.nl.",
+    "name": "invalid_address7.com.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 1,
+    "rdata": {
+      "address": "3.3.3.3"
+    },
+    "timestamp": 1492769633
+  },
+  {
+    "name": "ru.nl.",
     "type": "NS",
     "class": "IN",
     "ttl": 3600,
     "rdata": {
-      "nsdname": "ns3.firstfind.nl."
+      "nsdname": "ns4.ru.nl."
     },
-    "timestamp": 1492722320
+    "timestamp": 1492769633
   },
   {
-    "name": "radboud.nl.",
+    "name": "ru.nl.",
     "type": "NS",
     "class": "IN",
     "ttl": 3600,
     "rdata": {
-      "nsdname": "ns4.firstfind.nl."
+      "nsdname": "ns3.ru.nl."
     },
-    "timestamp": 1492722320
+    "timestamp": 1492769633
   },
   {
-    "name": "radboud.nl.",
+    "name": "ru.nl.",
     "type": "NS",
     "class": "IN",
     "ttl": 3600,
     "rdata": {
-      "nsdname": "ns5.firstfind.net."
+      "nsdname": "ns1.surfnet.nl."
     },
-    "timestamp": 1492722320
+    "timestamp": 1492769633
   },
   {
-    "name": "radboud.nl.",
+    "name": "ns4.ru.nl.",
     "type": "A",
     "class": "IN",
-    "ttl": 14400,
+    "ttl": 3600,
     "rdata": {
-      "address": "85.158.203.21"
+      "address": "131.174.78.17"
     },
-    "timestamp": 1492722320
+    "timestamp": 1492769633
   },
   {
-    "name": "pl.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "c-dns.pl."
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "pl.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "i-dns.pl."
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "pl.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "a-dns.pl."
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "pl.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "h-dns.pl."
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "pl.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "f-dns.pl."
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "pl.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "d-dns.pl."
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "pl.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "g-dns.pl."
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "pl.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "e-dns.pl."
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "i-dns.pl.",
+    "name": "ns3.ru.nl.",
     "type": "A",
     "class": "IN",
-    "ttl": 86400,
+    "ttl": 3600,
     "rdata": {
-      "address": "156.154.100.15"
+      "address": "131.174.78.16"
     },
-    "timestamp": 1492722359
+    "timestamp": 1492769633
   },
   {
-    "name": "h-dns.pl.",
+    "name": "ns1.surfnet.nl.",
     "type": "A",
     "class": "IN",
-    "ttl": 172800,
+    "ttl": 3600,
     "rdata": {
-      "address": "194.0.1.2"
+      "address": "192.87.106.101"
     },
-    "timestamp": 1492722359
+    "timestamp": 1492769633
   },
   {
-    "name": "g-dns.pl.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "address": "149.156.1.252"
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "f-dns.pl.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 86400,
-    "rdata": {
-      "address": "77.79.212.238"
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "e-dns.pl.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 86400,
-    "rdata": {
-      "address": "46.28.245.82"
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "d-dns.pl.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "address": "81.15.133.186"
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "c-dns.pl.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "address": "93.190.128.146"
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "a-dns.pl.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 86400,
-    "rdata": {
-      "address": "194.181.87.156"
-    },
-    "timestamp": 1492722359
-  },
-  {
-    "name": "lubin.pl.",
+    "name": "science.ru.nl.",
     "type": "NS",
     "class": "IN",
     "ttl": 86400,
     "rdata": {
-      "nsdname": "a-dns.pl."
+      "nsdname": "ns2.science.ru.nl."
     },
-    "timestamp": 1492722360
+    "timestamp": 1492769633
   },
   {
-    "name": "lubin.pl.",
+    "name": "science.ru.nl.",
     "type": "NS",
     "class": "IN",
     "ttl": 86400,
     "rdata": {
-      "nsdname": "e-dns.pl."
+      "nsdname": "ns1.science.ru.nl."
     },
-    "timestamp": 1492722360
+    "timestamp": 1492769633
   },
   {
-    "name": "lubin.pl.",
-    "type": "NS",
+    "name": "ns1.science.ru.nl.",
+    "type": "A",
     "class": "IN",
     "ttl": 86400,
     "rdata": {
-      "nsdname": "f-dns.pl."
+      "address": "131.174.224.4"
     },
-    "timestamp": 1492722360
+    "timestamp": 1492769634
   },
   {
-    "name": "lubin.pl.",
-    "type": "NS",
+    "name": "ns2.science.ru.nl.",
+    "type": "A",
     "class": "IN",
     "ttl": 86400,
     "rdata": {
-      "nsdname": "i-dns.pl."
+      "address": "131.174.16.133"
     },
-    "timestamp": 1492722360
-  },
-  {
-    "name": "cat.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "ns.nic.cat."
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "cat.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "cat.pch.net."
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "cat.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "ns1.nic.es."
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "cat.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "nsc.nic.de."
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "cat.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "anyc1.irondns.net."
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "cat.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "sns-pb.isc.org."
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "cat.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "nsdname": "switch.nic.cat."
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "switch.nic.cat.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "address": "130.59.31.29"
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "anyc1.irondns.net.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "address": "195.253.64.4"
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "nsc.nic.de.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "address": "81.91.161.84"
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "ns1.nic.es.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "address": "194.69.254.1"
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "cat.pch.net.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "address": "204.61.216.20"
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "ns.nic.cat.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 172800,
-    "rdata": {
-      "address": "84.88.0.162"
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "nyan.cat.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 86400,
-    "rdata": {
-      "nsdname": "ns1.dreamhost.com."
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "nyan.cat.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 86400,
-    "rdata": {
-      "nsdname": "ns2.dreamhost.com."
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "nyan.cat.",
-    "type": "NS",
-    "class": "IN",
-    "ttl": 86400,
-    "rdata": {
-      "nsdname": "ns3.dreamhost.com."
-    },
-    "timestamp": 1492722394
-  },
-  {
-    "name": "nyan.cat.",
-    "type": "A",
-    "class": "IN",
-    "ttl": 14400,
-    "rdata": {
-      "address": "208.97.169.68"
-    },
-    "timestamp": 1492722395
+    "timestamp": 1492769634
   },
   {
     "name": "gmail.com.",
@@ -887,7 +637,7 @@
     "rdata": {
       "nsdname": "ns2.google.com."
     },
-    "timestamp": 1492722436
+    "timestamp": 1492769633
   },
   {
     "name": "gmail.com.",
@@ -897,7 +647,7 @@
     "rdata": {
       "nsdname": "ns1.google.com."
     },
-    "timestamp": 1492722436
+    "timestamp": 1492769633
   },
   {
     "name": "gmail.com.",
@@ -907,7 +657,7 @@
     "rdata": {
       "nsdname": "ns3.google.com."
     },
-    "timestamp": 1492722436
+    "timestamp": 1492769633
   },
   {
     "name": "gmail.com.",
@@ -917,7 +667,7 @@
     "rdata": {
       "nsdname": "ns4.google.com."
     },
-    "timestamp": 1492722436
+    "timestamp": 1492769633
   },
   {
     "name": "ns4.google.com.",
@@ -927,7 +677,7 @@
     "rdata": {
       "address": "216.239.38.10"
     },
-    "timestamp": 1492722436
+    "timestamp": 1492769633
   },
   {
     "name": "ns3.google.com.",
@@ -937,7 +687,7 @@
     "rdata": {
       "address": "216.239.36.10"
     },
-    "timestamp": 1492722436
+    "timestamp": 1492769633
   },
   {
     "name": "ns1.google.com.",
@@ -947,7 +697,7 @@
     "rdata": {
       "address": "216.239.32.10"
     },
-    "timestamp": 1492722436
+    "timestamp": 1492769633
   },
   {
     "name": "ns2.google.com.",
@@ -957,7 +707,17 @@
     "rdata": {
       "address": "216.239.34.10"
     },
-    "timestamp": 1492722436
+    "timestamp": 1492769633
+  },
+  {
+    "name": "wiki.science.ru.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "address": "131.174.8.71"
+    },
+    "timestamp": 1492769633
   },
   {
     "name": "www.gmail.com.",
@@ -967,7 +727,7 @@
     "rdata": {
       "cname": "mail.google.com."
     },
-    "timestamp": 1492722436
+    "timestamp": 1492769633
   },
   {
     "name": "mail.google.com.",
@@ -977,7 +737,7 @@
     "rdata": {
       "cname": "googlemail.l.google.com."
     },
-    "timestamp": 1492722436
+    "timestamp": 1492769633
   },
   {
     "name": "googlemail.l.google.com.",
@@ -987,6 +747,36 @@
     "rdata": {
       "address": "172.217.17.69"
     },
-    "timestamp": 1492722436
+    "timestamp": 1492769633
+  },
+  {
+    "name": "cs.ru.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "nsdname": "ns2.science.ru.nl."
+    },
+    "timestamp": 1492769634
+  },
+  {
+    "name": "cs.ru.nl.",
+    "type": "NS",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "nsdname": "ns1.science.ru.nl."
+    },
+    "timestamp": 1492769634
+  },
+  {
+    "name": "cs.ru.nl.",
+    "type": "A",
+    "class": "IN",
+    "ttl": 86400,
+    "rdata": {
+      "address": "131.174.8.6"
+    },
+    "timestamp": 1492769634
   }
 ]

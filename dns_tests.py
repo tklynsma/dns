@@ -4,6 +4,7 @@
 
 
 import os
+import socket
 import sys
 import time
 import unittest
@@ -12,10 +13,13 @@ from unittest import TestCase
 from argparse import ArgumentParser
 from dns.cache import RecordCache
 from dns.classes import Class
+from dns.message import Message, Header, Question
 from dns.name import Name
 from dns.resolver import Resolver
 from dns.resource import CNAMERecordData, ARecordData, ResourceRecord
 from dns.rtypes import Type
+from dns.server import Server
+from threading import Thread
 
 PORT = 5001
 SERVER = "localhost"
@@ -59,7 +63,7 @@ class TestResolver(TestCase):
 
     def test_invalid_hostname(self):
         """Solve invalid FQDN, empty output generated."""
-        hostname = "invalid_address.com."
+        hostname = "invalid_address.asd."
         result = self.resolver.gethostbyname(hostname)
         self.assertEqual(result, (hostname, [], [])) 
 
@@ -105,7 +109,7 @@ class TestCache(TestCase):
         self.assertEqual(result, [])
 
     def test_ttl(self):
-        """Test cache lookup for exceeded ttl, record should not be included in answer."""
+        """Test cache lookup for exceeded ttl, record should not be in answer."""
         rdata = ARecordData("1.1.1.1")
         record = ResourceRecord(Name("a"), Type.A, Class.IN, TTL, rdata)
         self.cache.add_record(record)
@@ -116,7 +120,7 @@ class TestCache(TestCase):
         self.assertEqual(result, [self.record1])
 
     def test_add_duplicate(self):
-        """Test adding duplicate data, only the last added record should be in cache."""
+        """Test adding duplicate data, only last added record should be in cache."""
         cache = RecordCache()
         rdata1 = ARecordData("2.2.2.2")
         rdata2 = ARecordData("2.2.2.2")
@@ -182,7 +186,7 @@ class TestResolverCache(TestCase):
         self.assertEqual(result, (hostname2, [hostname1], ["1.1.1.1"]))
 
     def test_cached_hostname3(self):
-        """Solve invalid cached CNAME chain, output corresponds to alias (google.nl.)"""
+        """Solve invalid cached CNAME chain, output IP corresponds to alias"""
         hostname1 = "invalid_address4.com."
         hostname2 = "invalid_address5.com."
         hostname3 = "google.nl."
@@ -193,7 +197,8 @@ class TestResolverCache(TestCase):
         self.resolver.cache.add_record(record1)
         self.resolver.cache.add_record(record2)
         result = self.resolver.gethostbyname(hostname1)
-        self.assertEqual(result, (hostname3, [hostname1, hostname2], ["172.217.17.67"]))
+        self.assertEqual(result, (hostname3, [hostname1, hostname2],
+            ["172.217.17.67"]))
 
     def test_cached_hostname4(self):
         """Wait TTL time for an invalid cached FQDN to expire, output is empty."""
@@ -216,8 +221,180 @@ class TestResolverCache(TestCase):
         self.assertEqual(result, (hostname, [], ["3.3.3.3"]))
 
 
+class RunTestServer(Thread):
+    """A thread to run the server for testing."""
+
+    def __init__(self, server):
+        super().__init__()
+        self.daemon = True
+        self.done = False
+        self.server = server
+
+    def run(self):
+        """Run the server thread."""
+        while not self.done:
+            self.server.serve()
+
+    def shutdown(self):
+        """Shut the test server down."""
+        self.done = True
+        self.server.shutdown()
+
+
 class TestServer(TestCase):
     """Server tests"""
+
+    @classmethod
+    def setUpClass(cls):
+        server = Server(PORT, True, 0)
+        cls.run_server = RunTestServer(server)
+        cls.run_server.start()
+        cls.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        cls.sock.settimeout(TIMEOUT)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.run_server.shutdown()
+        cls.sock.close()
+
+    def send_and_receive_query(self, hostname, rd, qtype=Type.A, ident=9001):
+        """Create and send a query to the server and receive a response.
+
+        Args:
+            hostname (str): the hostname to resolve
+            rd (Bool): indicates whether recursion is desired
+            qtype (Type): the query type (default Type.A)
+            ident (int): the identification number
+
+        Returns:
+            Message: the response message
+        """
+        question = Question(Name(hostname), qtype, Class.IN)
+        header = Header(ident, 0, 1, 0, 0, 0)
+        header.qr, header.opcode, header.rd = 0, 0, 1 if rd else 0
+        query = Message(header, [question])
+        try:
+            self.sock.sendto(query.to_bytes(), (SERVER, PORT))
+            response = Message.from_bytes(self.sock.recv(512))
+            return response
+        except:
+            return None
+
+    def test_server_zone1(self):
+        """Solve a query for a FQDN for which the server has direct authority."""
+        response = self.send_and_receive_query("ru.nl.", False)
+        self.assertEqual(response.header.aa, 1)
+        self.assertEqual(response.answers[0].type_, Type.A)
+        self.assertEqual(str(response.answers[0].rdata), "131.174.78.60")
+
+    def test_server_zone2(self):
+        """Solve a query for a FQDN for which the server has direct authority,
+        including a CNAME record."""
+        response = self.send_and_receive_query("www.ru.nl.", False)
+        self.assertEqual(response.header.aa, 1)
+        self.assertEqual(response.answers[0].type_, Type.CNAME)
+        self.assertEqual(response.answers[1].type_, Type.A)
+        self.assertEqual(str(response.answers[0].rdata), "wwwproxy.ru.nl.")
+        self.assertEqual(str(response.answers[1].rdata), "131.174.78.60")
+
+    def test_server_zone3(self):
+        """Solve a query for a FQDN for which your server does not have direct
+        authority, yet there is a name server within your zone which does."""
+        response = self.send_and_receive_query("cs.ru.nl.", False)
+        self.assertEqual(response.header.an_count, 0)
+        self.assertEqual(response.header.aa, 0)
+        self.assertEqual(str(response.authorities[0].rdata), "ns1.science.ru.nl.")
+        self.assertEqual(str(response.authorities[1].rdata), "ns2.science.ru.nl.")
+        self.assertEqual(str(response.authorities[2].rdata), "ns3.science.ru.nl.")
+        self.assertEqual(str(response.additionals[0].rdata), "131.174.224.4")
+        self.assertEqual(str(response.additionals[1].rdata), "131.174.16.133")
+        self.assertEqual(str(response.additionals[2].rdata), "131.174.30.34")
+
+    def test_server_zone4(self):
+        """Solve a query for a FQDN for which your server does not have direct
+        authority, yet there is a (higher level) name server within your zone which
+        does."""
+        response = self.send_and_receive_query("sub.sub.sub.science.ru.nl.", False)
+        self.assertEqual(response.header.an_count, 0)
+        self.assertEqual(response.header.aa, 0)
+        self.assertEqual(str(response.authorities[0].rdata), "ns1.science.ru.nl.")
+        self.assertEqual(str(response.authorities[1].rdata), "ns2.science.ru.nl.")
+        self.assertEqual(str(response.authorities[2].rdata), "ns3.science.ru.nl.")
+        self.assertEqual(str(response.additionals[0].rdata), "131.174.224.4")
+        self.assertEqual(str(response.additionals[1].rdata), "131.174.16.133")
+        self.assertEqual(str(response.additionals[2].rdata), "131.174.30.34")
+
+    def test_server_resolver1(self):
+        """Solve a query for a FQDN which points outside your zone, with recursion"""
+        response = self.send_and_receive_query("google.nl.", True)
+        self.assertEqual(response.header.aa, 0)
+        self.assertEqual(str(response.answers[0].rdata), "172.217.17.67")
+
+    def test_server_resolver2(self):
+        """Solve a query for a FQDN for which your server does not have direct
+        authority, yet there is a name server without your zone which does, with
+        recursion."""
+        response = self.send_and_receive_query("cs.ru.nl.", True)
+        self.assertEqual(response.header.aa, 0)
+        self.assertEqual(str(response.answers[0].rdata), "131.174.8.6")
+
+    def test_server_parallel(self):
+        """Solve parallel requests for different FQDN."""
+        hostname1 = "www.gmail.com."
+        hostname2 = "wiki.science.ru.nl."
+        question1 = Question(Name(hostname1), Type.A, Class.IN)
+        question2 = Question(Name(hostname2), Type.A, Class.IN)
+        header1 = Header(3333, 0, 1, 0, 0, 0)
+        header2 = Header(4444, 0, 1, 0, 0, 0)
+        header1.qr, header1.opcode, header1.rd = 0, 0, 1
+        header2.qt, header2.opcode, header2.rd = 0, 0, 1
+        query1 = Message(header1, [question1])
+        query2 = Message(header2, [question2])
+
+        try:
+            self.sock.sendto(query1.to_bytes(), (SERVER, PORT))
+            self.sock.sendto(query2.to_bytes(), (SERVER, PORT))
+        except socket.error: self.assertTrue(False) # Test failed
+
+        try:
+            message1 = Message.from_bytes(self.sock.recv(512))
+            message2 = Message.from_bytes(self.sock.recv(512))
+        except: self.assertTrue(False) # Test failed
+
+        response1 = message1 if message1.header.ident == 3333 else message2
+        response2 = message1 if message1.header.ident == 4444 else message2
+        self.assertEqual(response1.answers[0].type_, Type.CNAME)
+        self.assertEqual(response1.answers[1].type_, Type.CNAME)
+        self.assertEqual(response1.answers[2].type_, Type.A)
+        self.assertEqual(response2.answers[0].type_, Type.A)
+        self.assertEqual(str(response1.answers[0].rdata), "mail.google.com.")
+        self.assertEqual(str(response1.answers[1].rdata), "googlemail.l.google.com.")
+        self.assertEqual(str(response1.answers[2].rdata), "172.217.17.69")
+        self.assertEqual(str(response2.answers[0].rdata), "131.174.8.71")
+
+    def test_server_rcode3(self):
+        """Solve a query for an invalid FQDN, with recursion."""
+        response = self.send_and_receive_query("invalid_address.com.", True)
+        self.assertEqual(response.header.rcode, 3)
+        self.assertEqual(response.header.an_count, 0)
+        self.assertEqual(response.header.ns_count, 0)
+        self.assertEqual(response.header.ar_count, 0)
+
+    def test_server_rcode4(self):
+        """Solve a query of invalid (not implemented) type."""
+        response = self.send_and_receive_query("ru.nl.", False, qtype=Type.MX)
+        self.assertEqual(response.header.rcode, 4)
+        self.assertEqual(response.header.an_count, 0)
+        self.assertEqual(response.header.ns_count, 0)
+        self.assertEqual(response.header.ar_count, 0)
+
+    def test_server_rcode5(self):
+        """Solve a query for a FQDN which points outside your zone, no recursion"""
+        response = self.send_and_receive_query("google.nl.", False)
+        self.assertEqual(response.header.rcode, 5)
+        self.assertEqual(response.header.an_count, 0)
+        self.assertEqual(response.header.ns_count, 0)
+        self.assertEqual(response.header.ar_count, 0)
 
 
 def run_tests():

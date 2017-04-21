@@ -125,15 +125,18 @@ class RequestHandler(Thread):
             CNAMERecordData(Name(aliaslist[i+1]))) for i in range(len(aliaslist)-1)]
         answers = [ResourceRecord(Name(hostname), Type.A, Class.IN, 60,
             ARecordData(address)) for address in ipaddrlist]
-        self.send_response(self.query.questions, cnames + answers, [], [], [])
+        if answers:
+            self.send_response(self.query.questions, cnames + answers, [], [], [])
+        else:
+            vprint("Domain name does not exist", self.id, self.verbose)
+            self.send_response(self.query.questions, [], [], [], rcode=3)
 
     def run(self):
         """ Run the handler thread"""
-
         # If the question's qtype if not of type A: send back a response with rcode 4
         # (not implemented)
         if self.query.questions[0].qtype != Type.A:
-            vprint("Invalid query type", self.id, self.verbose)
+            vprint("Invalid query type.", self.id, self.verbose)
             self.send_response(self.query.questions, [], [], [], rcode=4)
 
         # Query is of type A:
@@ -159,12 +162,13 @@ class RequestHandler(Thread):
                     if cnames or authorities or additionals:
                         vprint("Authorative response.", self.id, self.verbose)
                         self.send_response(self.query.questions, cnames + answers,
-                            authorities, additionals, aa=True)
+                            authorities, additionals)
 
                     # If no records were found send back a response with rcode 5
                     # (refused)
                     else:
-                        vprint("No records in zonefile, query refused.", self.id, self.verbose)
+                        vprint("No records in zonefile, query refused.", self.id, 
+                            self.verbose)
                         self.send_response(self.query.questions, [], [], [], rcode=5)
 
                 # Recursion is desired:
@@ -228,6 +232,7 @@ class Server:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.bind(("localhost", self.port))
         sock.setblocking(0)
+        vprint("Server started", 99999, self.verbose)
 
         while not self.done:
             query, address = self.receive_valid_query(sock)
