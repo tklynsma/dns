@@ -17,14 +17,18 @@
     * No unexpected error was encountered when sending or receiving datagrams. This includes timeout exceptions.
     
     The next conditions assume that a response message was successfully received:
-    * The response packet has a RCODE of zero, indicating that no errors occurred.
-    * The response packed has its QR bit set to 1, indicating that it is a response message.
+    * The response has a RCODE of zero, indicating that no errors occurred.
+    * The response has its QR bit set to 1, indicating that it is a response message.
     * The identification number of the response corresponds to the identification number defined in the query.
     * The question section in the response is equal to the question section defined in the query.
 
     The first two conditions ensure that the datagram was received without errors. The last three conditions ensure that the response is an answer to the question defined in the query. If the response was invalid continue at the next name server in the list of hints.
 3. Two distinct cases are considered when a valid response has been received:
     1. The response contains an answer. In this case loop over all resource records found in the answer section. If the resource record is of type CNAME and its NAME field corresponds to the current FQDN: add the FQDN to the list of aliases and change the current FQDN to the domain name found in RDATA. If the resource record is of type A and its NAME field corresponds to the current FQDN: add the IP address found in RDATA to the list of IP addresses. Note that this does assume that CNAME records are listed before A records and that the CNAME records themselves are ordered.
+
+        If any A resource records were found then return the resulting host name, alias list and IP address list. If only CNAME resource record(s) were found then start a new query to the new FQDN using any additional name servers found in the authority and additional sections as initial hints. In addition append the root server hints in case the provided name server hints fail or they are absent. Go back to step 3.
+    2. The response has an empty answer section. In this case check the authority and additional section for any NS and A resource records and if found, add their IP addresses (or if no corresponding A resource record is found in the additional section, their domain names) at the start of the list of hints. Name servers with a provided IP address in the additional section are preferred over name servers without an IP address. Go back to step 3.
+6. When the list of hints is exhausted and no answer is found: output the hostname and empty lists for the aliases and IP addresses.
 
 ### Cache
 ...
