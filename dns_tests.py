@@ -63,7 +63,7 @@ class TestResolver(TestCase):
 
     def test_invalid_hostname(self):
         """Solve invalid FQDN, empty output generated."""
-        hostname = "invalid_address.asd."
+        hostname = "invalid_address.com."
         result = self.resolver.gethostbyname(hostname)
         self.assertEqual(result, (hostname, [], [])) 
 
@@ -332,7 +332,7 @@ class TestServer(TestCase):
 
     def test_server_resolver2(self):
         """Solve a query for a FQDN for which your server does not have direct
-        authority, yet there is a name server without your zone which does, with
+        authority, yet there is a name server within your zone which does, with
         recursion."""
         response = self.send_and_receive_query("cs.ru.nl.", True)
         self.assertEqual(response.header.aa, 0)

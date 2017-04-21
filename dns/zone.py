@@ -69,11 +69,12 @@ class Zone:
         Args:
             filename (str): the filename of the master file
         """
-        zonefile = open(filename, "r")
-        lines = zonefile.readlines()
-        lines = list(map(lambda x : x.split(';', 1)[0], lines))
-        lines = list(filter(lambda x : x != "" and x != "\n", lines))
-        lines = list(map(lambda x : x.split(), lines))
+        lines = []
+        with open(filename, "r") as zonefile:
+            lines = zonefile.readlines()
+            lines = list(map(lambda x : x.split(';', 1)[0], lines))
+            lines = list(filter(lambda x : x != "" and x != "\n", lines))
+            lines = list(map(lambda x : x.split(), lines))
 
         self.records = {line[0] : [] for line in lines}
 
