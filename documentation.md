@@ -11,6 +11,8 @@ The server, when running in its default settings (_localhost_ using port 5353), 
 $ dig @localhost hostname -p 5353 +noedns [+norec]
 ```
 
+_nslookup_ with the correct settings for server and port should work as well.
+
 ## Resolver
 Name resolution roughly follows the algorithm described in [Section 5.3.3 of RFC 1034](https://tools.ietf.org/html/rfc1034##section-5.3.3). At creation, the list of root servers is initialized using the zone file _root_ (see [root hints](https://www.internic.net/domain/named.root)). The cache is read from the json cachefile _cache_. The cache is shared between _all_ resolver instances and written back to the cachefile at deletion.
 
@@ -51,4 +53,17 @@ self.timestamp + self.ttl > time.time()
 When the cache file is first initialized _all_ resource records for which this condition does not hold are filtered from the cache. Thereafter this condition is only checked when doing a lookup: all resource records for _dname_ for which the condition does not hold are filtered from the cache before returning the result.
 
 ## Name server
-...
+The name server roughly follows the algorithm described in [Section 4.3.2 of RFC 1034](https://tools.ietf.org/html/rfc1034#section-4.3.2), omitting step 3.b.
+
+### Server
+The server listens for incoming datagrams and, if the datagram is a valid DNS query it will start a new thread to concurrently handle the request. A datagram is considered a valid DNS query if:
+*   No errors occurred while parsing the message from bytes.
+*   The message's _OPCODE_ is equal to zero, indicating a standard query.
+*   The message's _QR_ bit is set to zero, indicating a query.
+*   The message contains at least one resource record in its question section.
+
+If any of these conditions fail then the datagram is simply ignored.
+
+### Request handler
+Each request handler runs in a separate thread, resolves the query and sends a response back to the datagram's source address.
+
