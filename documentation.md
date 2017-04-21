@@ -18,14 +18,18 @@ Name resolution roughly follows the algorithm described in [Section 5.3.3 of RFC
 
 #### Consulting the cache
 When caching is enabled the resolver will first attempt to resolve the _hostname_ using the cache:
+
 1. Check the cache for _CNAME_ resource records matching the _hostname_. While there is still a valid _CNAME_ record to be found in the cache: add the _hostname_ to the _aliaslist_ and change the current _hostname_ to the canonical name found in _rdata_.
+
 2. Check the cache for _A_ resource records matching the _hostname_. If any were found return the answer; otherwise continue at the next step.
+
 2. Check the cache for _NS_ resource records. Start matching down the labels in _hostname_, starting at _hostname_ and moving up to (but excluding) the root, until any matching _NS_ resource records are found. If found; lookup matching _A_ resource records, change the list of _hints_ to the found name servers and start an iterative query for the _hostname_.
 
 #### Building an iterative query
 If the cache was unsuccesful in resolving the _hostname_ or caching was disabled the resolver will build an iterative query:
 
 1. Select and remove the first name server in the list of _hints_ and send a query for the _hostname_. The header's _QR_, _OPCODE_ and _RD_ bits are all set to zero. This tells the receiving name server that the message is a standard query and that no recursion is desired. If the list of _hints_ is empty go to step 5.
+
 2. Check whether the response message (if any) is valid. The response is considered valid if the following conditions hold:
     * No unexpected error was encountered when sending or receiving datagrams. This includes timeout exceptions.
     * The response has a _RCODE_ of zero, indicating that no errors occurred.
@@ -53,7 +57,7 @@ self.timestamp + self.ttl > time.time()
 When the cache file is first initialized _all_ resource records for which this condition does not hold are filtered from the cache. Thereafter this condition is only checked when doing a lookup: all resource records for _dname_ for which the condition does not hold are filtered from the cache before returning the result.
 
 ## Name server
-The name server roughly follows the algorithm described in [Section 4.3.2 of RFC 1034](https://tools.ietf.org/html/rfc1034#section-4.3.2), omitting step 3.b.
+The name server roughly follows the algorithm described in [Section 4.3.2 of RFC 1034](https://tools.ietf.org/html/rfc1034#section-4.3.2), omitting step 3.b. At creation, it will initialize its zonefile _zone_ and bind its UDP socket to _localhost_ and the indicated port number. When starting the DNS server using dns_server.py the default port is set to 5353.
 
 ### Server
 The server listens for incoming datagrams and, if the datagram is a valid DNS query it will start a new thread to concurrently handle the request. A datagram is considered a valid DNS query if:
@@ -67,3 +71,4 @@ If any of these conditions fail then the datagram is simply ignored.
 ### Request handler
 Each request handler runs in a separate thread, resolves the query and sends a response back to the datagram's source address.
 
+1. Consult the _zone_:
