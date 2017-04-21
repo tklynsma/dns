@@ -1,12 +1,11 @@
 # Documentation
 ## Description
-This document describes the implemented DNS resolver, cache and name server. 
-The provided framework was used for the project.
+This document describes the implemented DNS resolver, cache and name server. The provided framework was used for the project, which already provided classes for manipulating DNS messages and converting them to and from bytes.
 
 ## Usage
 Usage is as described in the assignment. In addition a "verbose" output option has been added to both dns_client.py and dns_server.py. To use this add the parameter ```-v``` or ```--verbose```.
 
-When running the server with its default settings (_localhost_ using port 5353) it was tested using the following _dig_ command:
+The server, when running in its default settings (_localhost_ using port 5353), was tested using the following _dig_ command:
 
 ```
 $ dig @localhost hostname -p 5353 +noedns [+norec]
@@ -43,13 +42,13 @@ If the cache was unsuccesful in resolving the _hostname_ or caching was disabled
 ## Cache
 For efficient lookup the cache is implemented as a dictionary; with domain names as keys and lists of resource records as values. The cachefile is read from and stored on disk using _json_ format. The cache is also guarded against concurrent access.
 
-To remove expired records a timestamp is associated with each resource record. Expired resource records are removed from the cache if the following function returns _false_:
+To remove expired records a timestamp is associated with each resource record. Expired resource records are removed from the cache if the following condition is _false_:
 
 ```
 self.timestamp + self.ttl > time.time()
 ```
 
-When the cache file is first initialized _all_ resource records for which this condition does not hold are filtered from the cache. Thereafter this condition is only checked
+When the cache file is first initialized _all_ resource records for which this condition does not hold are filtered from the cache. Thereafter this condition is only checked when doing a lookup: all resource records for _dname_ for which the condition does not hold are filtered from the cache before returning the result.
 
 ## Name server
 ...
