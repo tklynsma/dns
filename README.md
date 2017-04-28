@@ -21,20 +21,6 @@ A framework was provided for the project which already provided classes for mani
 * dns_tests.py: Tests for the resolver, cache and server.
 
 ## Usage
-...
-
-```
-python dns_client.py hostname [-c|--caching] [-t|--ttl time] [--timeout time] [-v|--verbose]
-```
-
-```
-python dns_server.py [−c|−−caching] [−t|−−ttl time] [−p|−−port portNum] [-v|--verbose]
-```
-
-```
-python dns_tests.py [−s|−−server dns_server] [−p|−−port portNum]
-```
-
 Usage is as described in the assignment. In addition a "verbose" output option has been added to both dns_client.py and dns_server.py. To use this add the parameter ```-v``` or ```--verbose```.
 
 The server, when running in its default settings (_localhost_ using port 5353), was tested using the following _dig_ command:
